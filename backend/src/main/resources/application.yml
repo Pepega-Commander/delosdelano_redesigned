@@ -1,0 +1,16 @@
+server:
+  port: 8081   # frontend dev server already uses 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5434/delosdelano
+    username: delo
+    password: delo123
+  jpa:
+    hibernate:
+      ddl-auto: validate   # Flyway owns the schema; Hibernate only checks it matches
+    open-in-view: false
+
+jwt:
+  secret: change-me-to-a-long-random-string-at-least-64-chars-aaaaaaaaaaaaaaa
+  expiration-days: 7

@@ -1,0 +1,633 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system definition.
+ *
+ * The @theme inline block maps CSS custom properties to Tailwind utility
+ * classes (e.g. --color-primary -> bg-primary, text-primary).
+ *
+ * The :root and .dark blocks define the actual color values using oklch.
+ * All colors MUST use oklch format.
+ *
+ * To add a new semantic color:
+ * 1. Add the variable to :root (light value) and .dark (dark value)
+ * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-paper: var(--paper);
+  --color-paper-dark: var(--paper-dark);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-terra: var(--terra);
+  --color-sage: var(--sage);
+  --color-mustard: var(--mustard);
+  --color-highlight: var(--highlight);
+  --font-serif: "Lora", Georgia, serif;
+  --font-display-editorial: "Playfair Display", "Lora", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-hand: "Caveat", cursive;
+  --font-display: "Jost", "Inter", system-ui, sans-serif;
+  --font-editorial: "Playfair Display", "Lora", Georgia, serif;
+  --font-grotesk: "Inter", system-ui, sans-serif;
+  --font-archivo: "Jost", "Inter", system-ui, sans-serif;
+}
+
+:root {
+  --radius: 0px;
+  --paper: #f9f3e8;
+  --paper-soft: #fbf6ec;
+  --paper-dark: #f1e9d6;
+  --ink: #17140f;
+  --ink-soft: #3b362d;
+  --ink-muted-2: #6b6353;
+  --terra: #e8871e;
+  --terra-soft: #f6dcb8;
+  --sage: #6b8f71;
+  --sage-soft: #d6e1d5;
+  --mustard: #e8871e;
+  --highlight: #f4d01e;
+  /* Warm, brand-tinted shadow scale */
+  /* Brutalist offset-shadow color. Flips in dark mode so shadows stay dark. */
+  --brutal: #17140f;
+  --shadow-1: 0 1px 2px rgba(23, 20, 15, 0.06);
+  --shadow-2: 0 4px 12px -4px rgba(23, 20, 15, 0.1), 0 2px 4px rgba(23, 20, 15, 0.04);
+  --shadow-3: 0 12px 28px -12px rgba(23, 20, 15, 0.18), 0 4px 10px -4px rgba(23, 20, 15, 0.08);
+  --shadow-4: 0 24px 60px -20px rgba(23, 20, 15, 0.28), 0 10px 24px -10px rgba(23, 20, 15, 0.12);
+  --shadow-warm: 0 10px 30px -10px color-mix(in oklab, var(--terra) 35%, transparent);
+  --shadow-lift: 0 18px 40px -14px color-mix(in oklab, var(--ink) 25%, transparent);
+  /* Radii extension */
+  --radius-pill: 999px;
+  --radius-soft: 6px;
+  /* Motion easings */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: #fdf9ef;
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--terra);
+  --primary-foreground: #fbf6ec;
+  --secondary: var(--sage);
+  --secondary-foreground: #fbf6ec;
+  --muted: #efe7d3;
+  --muted-foreground: var(--ink-soft);
+  --accent: var(--mustard);
+  --accent-foreground: var(--ink);
+  --destructive: var(--terra);
+  --destructive-foreground: #fbf6ec;
+  --border: #8a7f66;
+  --input: #8a7f66;
+  --ring: var(--terra);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.984 0.003 247.858);
+  --sidebar-foreground: oklch(0.129 0.042 264.695);
+  --sidebar-primary: oklch(0.208 0.042 265.755);
+  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-accent: oklch(0.968 0.007 247.896);
+  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
+  --sidebar-border: oklch(0.929 0.013 255.508);
+  --sidebar-ring: oklch(0.704 0.04 256.788);
+}
+
+.dark {
+  /* Invert brand paper/ink tokens; keep warm accents. */
+  --paper: #14110c;
+  --paper-soft: #1b1712;
+  --paper-dark: #0e0c08;
+  --ink: #f1eadb;
+  --ink-soft: #c8bfa8;
+  --ink-muted-2: #948b77;
+  --terra: #f0a24a;
+  --terra-soft: #4a2f14;
+  --sage: #a9c6a6;
+  --sage-soft: #29352a;
+  --mustard: #f0a24a;
+  --highlight: #f4d01e;
+  /* Keep brutalist offset shadows dark on dark backgrounds */
+  --brutal: #000000;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: #1e1a13;
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--terra);
+  --primary-foreground: #14110c;
+  --secondary: var(--sage);
+  --secondary-foreground: #14110c;
+  --muted: #26221a;
+  --muted-foreground: var(--ink-soft);
+  --accent: var(--mustard);
+  --accent-foreground: #14110c;
+  --destructive: var(--terra);
+  --destructive-foreground: #14110c;
+  --border: #3a3428;
+  --input: #3a3428;
+  --ring: var(--terra);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.208 0.042 265.755);
+  --sidebar-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-accent: oklch(0.279 0.041 260.031);
+  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.551 0.027 264.364);
+}
+
+/* Dark-mode readability fixes: keep "always-dark" surfaces dark even when
+   --ink flips to a light tone, and force dark text on warm accent surfaces. */
+.dark .marker,
+.dark .tape {
+  color: #14110c;
+}
+
+/* Yellow highlight surfaces always need dark text for contrast.
+   NOTE: match exact utility classes only — a substring selector like
+   [class*="bg-highlight"] also matches hover:bg-highlight and makes
+   resting-state text dark-on-dark (unreadable). */
+.dark .bg-highlight,
+.dark .bg-terra,
+.dark .bg-mustard,
+.dark .bg-primary {
+  color: #14110c;
+}
+
+/* Buttons that turn yellow/orange on hover need dark text only WHILE hovered */
+.dark [class*="hover:bg-highlight"]:hover,
+.dark [class*="hover:bg-terra"]:hover,
+.dark [class*="hover:bg-mustard"]:hover {
+  color: #14110c !important;
+}
+.dark .focus-chip:hover:not(:disabled) {
+  color: #14110c;
+}
+
+/* Force dark text on children too — descendant spans use text-ink which
+   would otherwise flip to light and become unreadable on yellow. */
+.dark .bg-highlight *,
+.dark .bg-terra *,
+.dark .bg-mustard * {
+  color: #14110c !important;
+}
+
+/* Soften cream-bright borders in dark mode so cards don't look outlined in white,
+   but keep enough contrast for buttons/inputs to stay visible. */
+.dark .border-ink {
+  border-color: #4a4335;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility focus-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 0;
+  border: 2px solid var(--ink);
+  background: var(--paper-soft);
+  padding: 0.4rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  box-shadow: 3px 3px 0 var(--brutal);
+  transition:
+    transform 0.2s var(--ease-out-soft),
+    box-shadow 0.25s var(--ease-out-soft),
+    background 0.2s ease;
+  &:hover:not(:disabled) {
+    background: var(--highlight);
+    transform: translate(-1px, -1px);
+    box-shadow:
+      5px 5px 0 var(--brutal),
+      0 0 0 1px color-mix(in oklab, var(--terra) 30%, transparent),
+      0 10px 24px -6px color-mix(in oklab, var(--terra) 55%, transparent);
+  }
+  &:active:not(:disabled) {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 var(--brutal);
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* Impact-scale dots: on hover fill with the dot's tone (sage / terra / neutral). */
+.impact-dot:not(.scale-110):hover {
+  background-color: color-mix(in oklab, var(--dot-tone) 100%, transparent) !important;
+}
+
+.dark #footer {
+  background-color: #0a0805;
+  color: #e8dfc8;
+}
+.dark #footer .text-highlight {
+  color: var(--highlight);
+}
+
+.dark .ink-glow {
+  background-color: #0a0805 !important;
+  color: #e8dfc8 !important;
+}
+
+.dark .dossier-strip {
+  background-color: #0a0805;
+  color: #e8dfc8;
+  border-color: #2a2418;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    background-image:
+      radial-gradient(rgba(45, 42, 38, 0.05) 1px, transparent 1px),
+      radial-gradient(rgba(45, 42, 38, 0.03) 1px, transparent 1px);
+    background-size:
+      3px 3px,
+      7px 7px;
+    background-position:
+      0 0,
+      1px 1px;
+  }
+
+  /* Paper grain overlay — sits above everything but doesn't block input. */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.06;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.08 0 0 0 0 0.06 0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background-size: 240px 240px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@utility btn-link {
+  display: inline-block;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--terra);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: color 0.15s;
+  &:hover {
+    color: var(--terra);
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+@utility text-pretty {
+  text-wrap: pretty;
+}
+
+@utility font-editorial {
+  font-family: var(--font-display-editorial);
+  font-optical-sizing: auto;
+  font-variation-settings: "opsz" 120;
+  letter-spacing: -0.02em;
+}
+
+@utility story-link {
+  position: relative;
+  display: inline-block;
+  color: inherit;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    height: 2px;
+    width: 100%;
+    background: var(--terra);
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.35s var(--ease-out-soft);
+  }
+  &:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+}
+
+@utility focus-ring-brand {
+  &:focus-visible {
+    outline: 2px solid var(--terra);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 5px color-mix(in oklab, var(--paper) 100%, transparent);
+  }
+}
+
+@utility paper-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+}
+
+/* === Brutal accents ============================================= */
+
+@utility card-brutal {
+  background-color: var(--card);
+  border: 2px solid var(--ink);
+  box-shadow: 6px 6px 0 var(--brutal);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+  &:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 var(--brutal);
+  }
+}
+
+@utility card-brutal-sm {
+  background-color: var(--card);
+  border: 2px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--brutal);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+  &:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0 var(--brutal);
+  }
+}
+
+@utility marker {
+  background-color: var(--highlight);
+  color: var(--ink);
+  padding: 0 0.25em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  line-height: 1.05;
+}
+
+@utility tape {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  width: 110px;
+  height: 22px;
+  background: color-mix(in oklab, var(--highlight) 90%, transparent);
+  transform: translateX(-50%) rotate(-3deg);
+  border-left: 1px dashed color-mix(in oklab, var(--ink) 20%, transparent);
+  border-right: 1px dashed color-mix(in oklab, var(--ink) 20%, transparent);
+  z-index: 2;
+  pointer-events: none;
+}
+
+@utility stamp {
+  display: inline-block;
+  border: 2px solid var(--terra);
+  color: var(--terra);
+  padding: 0.15rem 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transform: rotate(-6deg);
+  background: color-mix(in oklab, var(--paper) 60%, transparent);
+}
+
+@keyframes reveal-block {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(4px);
+  }
+  60% {
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.animate-reveal-block {
+  animation: reveal-block 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Slow Ken Burns zoom for hero images */
+@keyframes ken-burns {
+  0% {
+    transform: scale(1);
+    transform-origin: 30% 40%;
+  }
+  100% {
+    transform: scale(1.08);
+    transform-origin: 50% 55%;
+  }
+}
+.animate-ken-burns {
+  animation: ken-burns 8000ms var(--ease-out-soft, ease-out) both;
+}
+
+/* Slide indicator progress fill (restarts on key change) */
+@keyframes slide-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.animate-slide-progress {
+  transform-origin: left center;
+  animation: slide-progress 6000ms linear both;
+}
+
+/* Reveal-on-scroll base + visible state */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 700ms var(--ease-out-soft),
+    transform 700ms var(--ease-out-soft);
+}
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Warm, on-brand hover glow for pressables. Uses the terra accent so it
+   feels like a soft warm halo instead of a glassmorphism sheen. */
+@utility warm-glow {
+  transition:
+    box-shadow 300ms var(--ease-out-soft),
+    transform 300ms var(--ease-out-soft),
+    border-color 200ms var(--ease-out-soft);
+  &:hover {
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--terra) 25%, transparent),
+      0 10px 28px -8px color-mix(in oklab, var(--terra) 65%, transparent),
+      0 4px 10px -2px color-mix(in oklab, var(--terra) 40%, transparent) !important;
+  }
+  &:focus-visible {
+    box-shadow:
+      0 0 0 2px color-mix(in oklab, var(--terra) 55%, transparent),
+      0 10px 24px -12px color-mix(in oklab, var(--terra) 60%, transparent) !important;
+  }
+}
+
+/* Pointer cursor for any interactive element — matches the tactile, editorial feel. */
+@layer base {
+  a[href],
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="link"],
+  [role="tab"],
+  [role="menuitem"],
+  [role="option"],
+  summary,
+  label[for],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled),
+  input[type="submit"]:not(:disabled),
+  input[type="button"]:not(:disabled),
+  input[type="reset"]:not(:disabled),
+  input[type="file"]:not(:disabled) {
+    cursor: pointer;
+  }
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+}
+
+/* Sunlit yellow glow — for playful primary CTAs that use the highlight color. */
+@utility sun-glow {
+  transition:
+    box-shadow 300ms var(--ease-out-soft),
+    transform 300ms var(--ease-out-soft);
+  &:hover {
+    box-shadow:
+      8px 8px 0 var(--brutal),
+      0 0 0 1px color-mix(in oklab, var(--highlight) 45%, transparent),
+      0 12px 32px -8px color-mix(in oklab, var(--highlight) 75%, transparent),
+      0 4px 12px -2px color-mix(in oklab, var(--highlight) 55%, transparent) !important;
+  }
+  &:focus-visible {
+    box-shadow:
+      0 0 0 2px color-mix(in oklab, var(--highlight) 70%, transparent),
+      0 12px 28px -12px color-mix(in oklab, var(--highlight) 70%, transparent) !important;
+  }
+}
+
+/* Deep ink glow — for dark/black buttons. A soft, on-brand shadow bloom. */
+@utility ink-glow {
+  transition:
+    box-shadow 300ms var(--ease-out-soft),
+    transform 300ms var(--ease-out-soft);
+  &:hover {
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--ink) 55%, transparent),
+      0 12px 32px -8px color-mix(in oklab, var(--ink) 70%, transparent),
+      0 4px 12px -2px color-mix(in oklab, var(--ink) 45%, transparent) !important;
+  }
+  &:focus-visible {
+    box-shadow:
+      0 0 0 2px color-mix(in oklab, var(--ink) 70%, transparent),
+      0 12px 28px -12px color-mix(in oklab, var(--ink) 65%, transparent) !important;
+  }
+}
