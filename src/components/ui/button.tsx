@@ -5,27 +5,26 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[10px] text-sm font-medium cursor-pointer transition-all duration-200 ease-[var(--ease-out-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple/40 focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "ink-glow bg-primary text-primary-foreground shadow hover:bg-primary/90",
+        default: "bg-primary text-primary-foreground shadow-[var(--shadow-2)] hover:bg-purple/90",
         destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
-          "warm-glow border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
-        secondary:
-          "warm-glow bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-        hero: "ink-glow relative bg-ink text-primary-foreground font-editorial tracking-wide shadow-[var(--shadow-3)] transition-all duration-300 ease-[var(--ease-out-soft)] hover:-translate-y-[2px] hover:bg-ink/95 before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white/15 before:content-['']",
+          "border border-ink/25 bg-transparent text-ink hover:border-ink/45 hover:bg-cream",
+        secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-lav/90",
+        ghost: "hover:bg-cream hover:text-ink",
+        link: "text-purple underline-offset-4 hover:underline",
+        hero: "bg-purple text-on-dark shadow-[var(--shadow-2)] hover:-translate-y-[1px] hover:bg-purple/92 hover:shadow-[var(--shadow-3)]",
         paper:
-          "warm-glow bg-card text-ink border border-border shadow-[var(--shadow-1)] font-serif hover:border-terra hover:-translate-y-[1px] transition-all duration-200 ease-[var(--ease-out-soft)]",
+          "border border-ink/12 bg-cream text-ink shadow-[var(--shadow-1)] hover:-translate-y-[1px] hover:border-purple/35",
       },
       size: {
-        default: "h-9 px-4 py-2",
-        sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-10 rounded-md px-8",
-        xl: "h-14 rounded-md px-10 text-lg",
+        default: "h-10 px-5 py-2",
+        sm: "h-8 rounded-lg px-3 text-xs",
+        lg: "h-11 px-6",
+        xl: "h-12 px-7 text-[15px]",
         icon: "h-9 w-9",
       },
     },

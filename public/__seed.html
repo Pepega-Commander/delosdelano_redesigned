@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru">
+  <body>
+    <script>
+      const now = Date.now();
+      const day = 86400000;
+      localStorage.setItem("ap.user", JSON.stringify({ name: "Ася", email: "asya@example.com" }));
+      localStorage.setItem(
+        "ap.quiz",
+        JSON.stringify({
+          type: "perfectionist",
+          trigger: "Страх сделать недостаточно хорошо",
+          impact: 7,
+          answers: [0, 1, 2, 3, 0, 1, 2, 3],
+          takenAt: now - day * 4,
+        }),
+      );
+      localStorage.setItem(
+        "ap.plans",
+        JSON.stringify({
+          full: {
+            planId: "full",
+            startedAt: now - day * 6,
+            completedChapters: [0, 1],
+          },
+        }),
+      );
+      localStorage.setItem(
+        "ap.archive",
+        JSON.stringify([
+          {
+            planId: "mini",
+            startedAt: now - day * 24,
+            completedChapters: [0, 1, 2],
+            finishedAt: now - day * 18,
+            letter: "Я справилась. Не идеально — но справилась.",
+          },
+        ]),
+      );
+      localStorage.setItem(
+        "ap.sessions",
+        JSON.stringify([
+          {
+            id: "s1",
+            task: "Дописать главу",
+            steps: ["Открыть документ", "Написать 200 слов"],
+            startedAt: now - day * 1 - 3600000,
+            endedAt: now - day * 1 - 3000000,
+            pauses: [],
+            completed: true,
+          },
+          {
+            id: "s2",
+            task: "Разобрать почту",
+            steps: ["Выбрать 10 писем"],
+            startedAt: now - day * 2 - 5400000,
+            endedAt: now - day * 2 - 4800000,
+            pauses: [{ at: now - day * 2 - 5100000, reason: "Тяжело" }],
+            completed: true,
+          },
+        ]),
+      );
+      localStorage.setItem(
+        "ap.checkins",
+        JSON.stringify([
+          { date: new Date(now).toISOString().slice(0, 10), done: "Начала главу", postponed: "Ответы на письма", distractions: ["Телефон"] },
+          { date: new Date(now - day).toISOString().slice(0, 10), done: "Прогулка", postponed: "Уборка", distractions: [] },
+          { date: new Date(now - day * 2).toISOString().slice(0, 10), done: "Черновик", postponed: "", distractions: ["Соцсети"] },
+        ]),
+      );
+      localStorage.setItem(
+        "ap.notifications",
+        JSON.stringify([
+          { id: "n1", text: "Добро пожаловать, Ася!", at: now - day * 4, read: false },
+          { id: "n2", text: "Вы завершили мини-план.", at: now - day * 18, read: false },
+        ]),
+      );
+      localStorage.setItem("ap.onboarded", "true");
+      location.replace(new URLSearchParams(location.search).get("to") || "/deals");
+    </script>
+  </body>
+</html>

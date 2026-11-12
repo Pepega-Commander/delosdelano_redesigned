@@ -28,7 +28,7 @@ export function SoundToggle() {
       }}
       aria-label={on ? "Выключить звук" : "Включить звук"}
       aria-pressed={on}
-      className="fixed bottom-5 left-5 z-[60] flex items-center gap-2 border-2 border-ink bg-paper px-3 py-2 font-mono text-[10px] uppercase tracking-[0.24em] shadow-[4px_4px_0_var(--brutal)] transition-transform hover:-translate-y-[1px] hover:-translate-x-[1px]"
+      className="fixed bottom-4 left-4 z-[60] flex items-center gap-2 rounded-full border border-ink/15 bg-cream/90 px-3.5 py-2 text-[9px] uppercase tracking-[0.2em] text-ink/70 backdrop-blur-sm transition-colors hover:border-ink/30 hover:text-ink md:bottom-5 md:left-5"
     >
       {on ? <Volume2 size={14} /> : <VolumeX size={14} />}
       <span>звук · {on ? "on" : "off"}</span>

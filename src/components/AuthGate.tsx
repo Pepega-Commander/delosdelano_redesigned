@@ -50,37 +50,29 @@ export function AuthGate({
     }
 
     return (
-      <div className="mx-auto max-w-md px-6 py-16">
-        <div
-          className="relative border border-border bg-card p-8 md:p-10"
-          style={{ boxShadow: "var(--shadow-3)", borderRadius: "var(--radius-soft)" }}
-        >
-          {/* Accent stripe */}
-          <span aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-terra" />
-
-          <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-terra">
-            <span className="inline-block h-px w-8 bg-terra" />
+      <div className="mx-auto max-w-lg px-6 py-16 md:py-20">
+        <div className="relative rounded-2xl border border-ink/10 bg-cream p-8 shadow-[var(--shadow-3)] md:p-10">
+          <div className="eyebrow flex items-center gap-3">
+            <span className="inline-block h-px w-8 bg-purple/60" />
             {isSignup ? "Знакомство" : "С возвращением"}
           </div>
 
-          <h1 className="text-balance mt-4 font-editorial text-3xl leading-tight md:text-4xl">
+          <h1 className="text-balance mt-4 text-[34px] leading-[1.1] font-light md:text-[40px]">
             {title}
           </h1>
 
           {/* Tabs */}
           <div
             role="tablist"
-            className="mt-6 inline-flex border border-border bg-paper-soft p-1"
-            style={{ borderRadius: "var(--radius-soft)" }}
+            className="mt-6 inline-flex rounded-full border border-ink/12 bg-paper-soft p-1"
           >
             <button
               role="tab"
               aria-selected={isSignup}
               onClick={() => setMode("signup")}
-              className={`px-4 py-1.5 font-mono text-xs uppercase tracking-widest transition-colors ${
-                isSignup ? "bg-ink text-primary-foreground" : "text-ink-soft hover:text-ink"
+              className={`rounded-full px-4 py-1.5 text-[10px] uppercase tracking-[0.16em] transition-colors ${
+                isSignup ? "bg-purple text-on-dark" : "text-ink-soft hover:text-ink"
               }`}
-              style={{ borderRadius: "calc(var(--radius-soft) - 2px)" }}
             >
               Регистрация
             </button>
@@ -88,16 +80,15 @@ export function AuthGate({
               role="tab"
               aria-selected={!isSignup}
               onClick={() => setMode("signin")}
-              className={`px-4 py-1.5 font-mono text-xs uppercase tracking-widest transition-colors ${
-                !isSignup ? "bg-ink text-primary-foreground" : "text-ink-soft hover:text-ink"
+              className={`rounded-full px-4 py-1.5 text-[10px] uppercase tracking-[0.16em] transition-colors ${
+                !isSignup ? "bg-purple text-on-dark" : "text-ink-soft hover:text-ink"
               }`}
-              style={{ borderRadius: "calc(var(--radius-soft) - 2px)" }}
             >
               Вход
             </button>
           </div>
 
-          <p className="mt-5 text-sm text-ink-soft">
+          <p className="mt-5 text-[13.5px] leading-[1.75] text-ink-soft">
             {isSignup
               ? "Создайте аккаунт: ник — им мы будем к вам обращаться, почта и пароль — для входа."
               : "Войдите по нику и паролю."}
@@ -105,27 +96,23 @@ export function AuthGate({
 
           <form onSubmit={submit} className="mt-6 space-y-5">
             <label className="block">
-              <span className="font-mono text-xs uppercase tracking-widest text-ink-soft">Ник</span>
+              <span className="text-[10px] uppercase tracking-[0.16em] text-ink-soft">Ник</span>
               <input
                 autoFocus
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 onBlur={() => setTouched(true)}
                 placeholder="Например: Ася"
-                className={`mt-2 w-full min-w-0 border-b bg-transparent py-2 font-editorial text-xl outline-none transition-colors md:text-2xl ${
-                  nameError ? "border-terra" : "border-border focus:border-terra"
+                className={`auth-input mt-2 w-full min-w-0 py-2 text-xl transition-colors md:text-2xl ${
+                  nameError ? "!border-b-[#a15c6a]" : ""
                 }`}
               />
-              {nameError && (
-                <span className="mt-2 block font-mono text-xs text-terra">{nameError}</span>
-              )}
+              {nameError && <span className="mt-2 block text-xs text-[#a15c6a]">{nameError}</span>}
             </label>
 
             {isSignup && (
               <label className="block">
-                <span className="font-mono text-xs uppercase tracking-widest text-ink-soft">
-                  Почта
-                </span>
+                <span className="text-[10px] uppercase tracking-[0.16em] text-ink-soft">Почта</span>
                 <input
                   type="email"
                   value={email}
@@ -133,20 +120,18 @@ export function AuthGate({
                   onBlur={() => setTouched(true)}
                   placeholder="you@example.com"
                   autoComplete="email"
-                  className={`mt-2 w-full min-w-0 border-b bg-transparent py-2 font-editorial text-xl outline-none transition-colors md:text-2xl ${
-                    emailError ? "border-terra" : "border-border focus:border-terra"
+                  className={`auth-input mt-2 w-full min-w-0 py-2 text-xl transition-colors md:text-2xl ${
+                    emailError ? "!border-b-[#a15c6a]" : ""
                   }`}
                 />
                 {emailError && (
-                  <span className="mt-2 block font-mono text-xs text-terra">{emailError}</span>
+                  <span className="mt-2 block text-xs text-[#a15c6a]">{emailError}</span>
                 )}
               </label>
             )}
 
             <label className="block">
-              <span className="font-mono text-xs uppercase tracking-widest text-ink-soft">
-                Пароль
-              </span>
+              <span className="text-[10px] uppercase tracking-[0.16em] text-ink-soft">Пароль</span>
               <input
                 type="password"
                 value={password}
@@ -154,39 +139,35 @@ export function AuthGate({
                 onBlur={() => setTouched(true)}
                 placeholder={isSignup ? "Минимум 6 символов" : "••••••"}
                 autoComplete={isSignup ? "new-password" : "current-password"}
-                className={`mt-2 w-full min-w-0 border-b bg-transparent py-2 font-editorial text-xl outline-none transition-colors md:text-2xl ${
-                  passError ? "border-terra" : "border-border focus:border-terra"
+                className={`auth-input mt-2 w-full min-w-0 py-2 text-xl transition-colors md:text-2xl ${
+                  passError ? "!border-b-[#a15c6a]" : ""
                 }`}
               />
               {passError && (
-                <span className="mt-2 block font-mono text-xs text-terra">{passError}</span>
+                <span className="mt-2 block text-xs text-[#a15c6a]">{passError}</span>
               )}
               {isSignup && !passError && (
-                <span className="mt-2 block font-mono text-xs text-ink-soft">
+                <span className="mt-2 block text-[11px] text-ink-soft">
                   Можно оставить пустым — задать позже в аккаунте.
                 </span>
               )}
             </label>
 
-            {formError && <div className="font-mono text-xs text-terra">{formError}</div>}
+            {formError && <div className="text-xs text-[#a15c6a]">{formError}</div>}
 
             {!isSignup && (
               <div className="text-right">
                 <button
                   type="button"
                   onClick={() => setFormError("Восстановление пароля будет доступно позже.")}
-                  className="font-mono text-xs uppercase tracking-widest text-ink-soft underline underline-offset-4 hover:text-terra"
+                  className="text-[10px] uppercase tracking-[0.16em] text-ink-soft underline underline-offset-4 hover:text-purple"
                 >
                   Забыли пароль?
                 </button>
               </div>
             )}
 
-            <button
-              type="submit"
-              className="ink-glow group inline-flex items-center gap-3 bg-ink px-7 py-3 font-editorial text-base text-primary-foreground shadow-[var(--shadow-2)] transition-all duration-300 ease-[var(--ease-out-soft)] hover:-translate-y-[1px] hover:shadow-[var(--shadow-warm)]"
-              style={{ borderRadius: "var(--radius-soft)" }}
-            >
+            <button type="submit" className="btn-primary group w-full justify-between">
               {isSignup ? "Создать" : "Войти"}
               <span
                 aria-hidden
@@ -197,7 +178,7 @@ export function AuthGate({
             </button>
           </form>
 
-          <p className="mt-8 border-t border-border pt-4 font-mono text-xs uppercase tracking-widest text-ink-soft">
+          <p className="mt-8 border-t border-ink/10 pt-4 text-[9px] uppercase tracking-[0.18em] text-ink-soft">
             Ник · почта · пароль
           </p>
         </div>

@@ -183,33 +183,29 @@ function AccountPage() {
 
   return (
     <Shell>
-      <div className="mx-auto max-w-3xl px-6 py-12">
+      <div className="mx-auto max-w-5xl px-6 py-12">
+        <div className="text-[10px] uppercase tracking-[0.2em] text-purple/75">Аккаунт</div>
         {/* Compact hero: avatar + name + quick facts */}
-        <div
-          className="relative flex items-center gap-6 overflow-hidden border border-border bg-card p-6 md:p-8"
-          style={{ borderRadius: "var(--radius-soft)", boxShadow: "var(--shadow-2)" }}
-        >
-          <span aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-terra" />
-          <div className="relative">
-            <div
-              className="flex h-20 w-20 items-center justify-center overflow-hidden border border-border bg-paper-dark md:h-24 md:w-24"
-              style={{ borderRadius: "var(--radius-pill)", boxShadow: "var(--shadow-1)" }}
-            >
+        <div className="relative mt-4 flex flex-col gap-5 overflow-hidden rounded-2xl bg-deep p-6 text-on-dark shadow-[var(--shadow-2)] sm:flex-row sm:items-center md:gap-6 md:p-8">
+          <div className="relative w-fit">
+            <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-mint md:h-24 md:w-24">
               {avatar ? (
                 <img src={avatar} alt="Аватар" className="h-full w-full object-cover" />
               ) : (
-                <span className="font-editorial text-4xl text-ink-soft">{initial}</span>
+                <span className="text-4xl font-light text-deep/70">{initial}</span>
               )}
             </div>
             <button
               type="button"
               onClick={() => fileRef.current?.click()}
               aria-label="Загрузить аватар"
-              className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center border border-ink bg-paper text-ink transition-transform hover:-translate-y-[1px] hover:bg-terra hover:text-primary-foreground"
-              style={{ borderRadius: "var(--radius-pill)" }}
+              className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-purple text-on-dark shadow-[var(--shadow-1)] transition-transform hover:-translate-y-[1px]"
             >
               <Camera size={14} />
             </button>
+            <div className="mt-2 flex items-center justify-center gap-1 text-[9px] uppercase tracking-[0.12em] text-on-dark/55">
+              <Camera size={10} /> Загрузить
+            </div>
             <input
               ref={fileRef}
               type="file"
@@ -219,14 +215,14 @@ function AccountPage() {
             />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="font-mono text-xs uppercase tracking-[0.2em] text-terra">Аккаунт</div>
-            <h1 className="mt-1 truncate font-editorial text-3xl leading-tight md:text-4xl">
+            <h1 className="truncate text-[30px] leading-tight font-light md:text-[38px]">
               Привет, {user.name}
             </h1>
-            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-ink-soft">
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] text-on-dark/65">
               <span className="inline-flex items-center gap-1.5">
                 <Mail size={12} /> {user.email ?? "почта не указана"}
               </span>
+              <span className="text-on-dark/25">·</span>
               <span className="inline-flex items-center gap-1.5">
                 <Lock size={12} /> {user.password ? "пароль установлен" : "без пароля"}
               </span>
@@ -235,52 +231,52 @@ function AccountPage() {
           <button
             type="button"
             onClick={logout}
-            className="hidden shrink-0 items-center gap-1.5 border border-border bg-paper px-3 py-2 font-mono text-xs uppercase tracking-widest text-ink-soft hover:border-terra hover:text-terra md:inline-flex"
-            style={{ borderRadius: "var(--radius-soft)" }}
+            className="inline-flex shrink-0 items-center gap-2 self-start rounded-lg border border-on-dark/30 px-4 py-2.5 text-[10px] uppercase tracking-[0.14em] text-on-dark/85 transition-colors hover:bg-on-dark hover:text-deep sm:self-center"
           >
-            <LogOut size={12} /> Выйти
+            <LogOut size={12} /> Выйти <span aria-hidden>↗</span>
           </button>
         </div>
 
-        {/* Tabs */}
-        <div role="tablist" className="mt-8 flex items-center gap-1 border-b border-border">
-          <TabBtn
-            active={tab === "profile"}
-            onClick={() => setTab("profile")}
-            icon={<UserIcon size={14} />}
-          >
-            Профиль
-          </TabBtn>
-          <TabBtn
-            active={tab === "email"}
-            onClick={() => setTab("email")}
-            icon={<Mail size={14} />}
-          >
-            Почта
-          </TabBtn>
-          <TabBtn
-            active={tab === "password"}
-            onClick={() => setTab("password")}
-            icon={<Lock size={14} />}
-          >
-            Пароль
-          </TabBtn>
-        </div>
+        <div className="mt-8 grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-10">
+          {/* Tabs */}
+          <div role="tablist" className="flex flex-wrap items-start gap-1 lg:flex-col">
+            <TabBtn
+              active={tab === "profile"}
+              onClick={() => setTab("profile")}
+              icon={<UserIcon size={14} />}
+            >
+              Профиль
+            </TabBtn>
+            <TabBtn
+              active={tab === "email"}
+              onClick={() => setTab("email")}
+              icon={<Mail size={14} />}
+            >
+              Почта
+            </TabBtn>
+            <TabBtn
+              active={tab === "password"}
+              onClick={() => setTab("password")}
+              icon={<Lock size={14} />}
+            >
+              Пароль
+            </TabBtn>
+          </div>
 
-        {/* Panels — только один открытый за раз */}
-        <div className="mt-8">
-          {tab === "profile" && (
-            <PanelCard accent="terra" className="animate-fade-in space-y-6">
-              <FormHeader
-                title="Ник и аватар"
-                sub={`Ник используется в текстах приложения: «Молодец, ${name || "имя"}, ты справился!».`}
-              />
+          {/* Panels — только один открытый за раз */}
+          <div>
+            {tab === "profile" && (
+              <PanelCard className="animate-fade-in space-y-6">
+                <FormHeader
+                  title="Ник и аватар"
+                  sub={`Ник используется в текстах приложения: «Молодец, ${name || "имя"}, ты справился!».`}
+                />
               <form onSubmit={save} className="space-y-6">
                 <FieldLabel label="Ник">
                   <input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="mt-2 w-full border-b border-border bg-transparent py-2 font-editorial text-2xl outline-none focus:border-terra"
+                    className="account-input mt-2 w-full px-4 py-3 text-[16px]"
                     placeholder="Например: Ася"
                   />
                 </FieldLabel>
@@ -290,7 +286,7 @@ function AccountPage() {
                     <button
                       type="button"
                       onClick={removeAvatar}
-                      className="inline-flex items-center gap-1 font-mono text-xs uppercase tracking-widest text-ink-soft hover:text-terra"
+                      className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.14em] text-ink-soft transition-colors hover:text-purple"
                     >
                       <Trash2 size={12} /> Убрать аватар
                     </button>
@@ -299,7 +295,7 @@ function AccountPage() {
                   <button
                     type="button"
                     onClick={logout}
-                    className="ml-auto inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest text-ink-soft underline underline-offset-4 hover:text-terra md:hidden"
+                    className="ml-auto inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-ink-soft underline underline-offset-4 transition-colors hover:text-purple md:hidden"
                   >
                     <LogOut size={12} /> Выйти
                   </button>
@@ -309,7 +305,7 @@ function AccountPage() {
           )}
 
           {tab === "email" && (
-            <PanelCard accent="sage" className="animate-fade-in space-y-6">
+            <PanelCard className="animate-fade-in space-y-6">
               <FormHeader
                 title="Почта"
                 sub="Используется для входа и восстановления доступа. Для смены — введите текущий пароль."
@@ -320,7 +316,7 @@ function AccountPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="mt-2 w-full border-b border-border bg-transparent py-2 font-editorial text-2xl outline-none focus:border-terra"
+                    className="account-input mt-2 w-full px-4 py-3 text-[16px]"
                     placeholder="you@example.com"
                     autoComplete="email"
                   />
@@ -330,7 +326,7 @@ function AccountPage() {
                     type="email"
                     value={emailConfirm}
                     onChange={(e) => setEmailConfirm(e.target.value)}
-                    className="mt-2 w-full border-b border-border bg-transparent py-2 font-editorial text-2xl outline-none focus:border-terra"
+                    className="account-input mt-2 w-full px-4 py-3 text-[16px]"
                     placeholder="ещё раз, чтобы не ошибиться"
                     autoComplete="email"
                   />
@@ -341,7 +337,7 @@ function AccountPage() {
                       type="password"
                       value={emailConfirmPass}
                       onChange={(e) => setEmailConfirmPass(e.target.value)}
-                      className="mt-2 w-full border-b border-border bg-transparent py-2 font-editorial text-2xl outline-none focus:border-terra"
+                      className="account-input mt-2 w-full px-4 py-3 text-[16px]"
                       autoComplete="current-password"
                       placeholder="Подтвердите паролем"
                     />
@@ -353,7 +349,7 @@ function AccountPage() {
                     <button
                       type="button"
                       onClick={() => setForgotOpen(true)}
-                      className="font-mono text-xs uppercase tracking-widest text-ink-soft underline underline-offset-4 hover:text-terra"
+                      className="text-[10px] uppercase tracking-[0.14em] text-ink-soft underline underline-offset-4 transition-colors hover:text-purple"
                     >
                       Забыли пароль?
                     </button>
@@ -365,7 +361,7 @@ function AccountPage() {
           )}
 
           {tab === "password" && (
-            <PanelCard accent="ink" className="animate-fade-in space-y-6">
+            <PanelCard className="animate-fade-in space-y-6">
               <FormHeader
                 title={user?.password ? "Изменить пароль" : "Добавить пароль"}
                 sub={
@@ -381,7 +377,7 @@ function AccountPage() {
                       type={showPass ? "text" : "password"}
                       value={currentPass}
                       onChange={(e) => setCurrentPass(e.target.value)}
-                      className="mt-2 w-full border-b border-border bg-transparent py-2 font-editorial text-2xl outline-none focus:border-terra"
+                      className="account-input mt-2 w-full px-4 py-3 text-[16px]"
                       autoComplete="current-password"
                     />
                   </FieldLabel>
@@ -391,7 +387,7 @@ function AccountPage() {
                     type={showPass ? "text" : "password"}
                     value={newPass}
                     onChange={(e) => setNewPass(e.target.value)}
-                    className="mt-2 w-full border-b border-border bg-transparent py-2 font-editorial text-2xl outline-none focus:border-terra"
+                    className="account-input mt-2 w-full px-4 py-3 text-[16px]"
                     autoComplete="new-password"
                   />
                 </FieldLabel>
@@ -400,7 +396,7 @@ function AccountPage() {
                     type={showPass ? "text" : "password"}
                     value={confirmPass}
                     onChange={(e) => setConfirmPass(e.target.value)}
-                    className="mt-2 w-full border-b border-border bg-transparent py-2 font-editorial text-2xl outline-none focus:border-terra"
+                    className="account-input mt-2 w-full px-4 py-3 text-[16px]"
                     autoComplete="new-password"
                   />
                 </FieldLabel>
@@ -409,7 +405,7 @@ function AccountPage() {
                   <button
                     type="button"
                     onClick={() => setShowPass((v) => !v)}
-                    className="inline-flex items-center gap-1 font-mono text-xs uppercase tracking-widest text-ink-soft hover:text-terra"
+                    className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.14em] text-ink-soft transition-colors hover:text-purple"
                   >
                     {showPass ? <EyeOff size={12} /> : <Eye size={12} />}
                     {showPass ? "Скрыть" : "Показать"}
@@ -418,7 +414,7 @@ function AccountPage() {
                     <button
                       type="button"
                       onClick={() => setForgotOpen(true)}
-                      className="font-mono text-xs uppercase tracking-widest text-ink-soft underline underline-offset-4 hover:text-terra"
+                      className="text-[10px] uppercase tracking-[0.14em] text-ink-soft underline underline-offset-4 transition-colors hover:text-purple"
                     >
                       Забыли пароль?
                     </button>
@@ -429,6 +425,7 @@ function AccountPage() {
             </PanelCard>
           )}
         </div>
+      </div>
       </div>
 
       {forgotOpen && (
@@ -458,19 +455,12 @@ function TabBtn({
       aria-selected={active}
       onClick={onClick}
       className={[
-        "relative -mb-px inline-flex items-center gap-2 px-4 py-3 font-mono text-xs uppercase tracking-widest transition-colors",
-        active ? "text-terra" : "text-ink-soft hover:text-ink",
+        "relative inline-flex w-auto items-center gap-2.5 rounded-lg px-4 py-2.5 text-left text-[11px] transition-colors lg:w-full lg:gap-3 lg:px-4 lg:py-3 lg:text-[12px]",
+        active ? "bg-mint text-ink" : "text-ink-soft hover:bg-cream hover:text-ink",
       ].join(" ")}
     >
       {icon}
       {children}
-      <span
-        aria-hidden
-        className={[
-          "absolute inset-x-2 bottom-0 h-[2px] transition-colors",
-          active ? "bg-terra" : "bg-transparent",
-        ].join(" ")}
-      />
     </button>
   );
 }
@@ -478,64 +468,20 @@ function TabBtn({
 function FormHeader({ title, sub }: { title: string; sub: string }) {
   return (
     <header>
-      <h2 className="font-editorial text-2xl leading-tight md:text-3xl">{title}</h2>
-      <p className="mt-2 text-sm text-ink-soft">{sub}</p>
+      <h2 className="text-[26px] leading-tight font-light md:text-[30px]">{title}</h2>
+      <p className="mt-2 text-[13px] leading-relaxed text-ink-soft">{sub}</p>
     </header>
   );
 }
 
-function PanelCard({
-  accent,
-  className,
-  children,
-}: {
-  accent: "terra" | "sage" | "ink";
-  className?: string;
-  children: React.ReactNode;
-}) {
-  const color =
-    accent === "terra"
-      ? "var(--color-terra)"
-      : accent === "sage"
-        ? "var(--color-sage)"
-        : "var(--color-ink)";
+function PanelCard({ className, children }: { className?: string; children: React.ReactNode }) {
   return (
     <section
       className={[
-        "relative border border-dashed border-border bg-card p-6 md:p-8",
+        "relative rounded-xl border border-ink/10 bg-cream p-6 shadow-[var(--shadow-1)] md:p-8",
         className ?? "",
       ].join(" ")}
-      style={{ borderRadius: "var(--radius-soft)", boxShadow: "var(--shadow-1)" }}
     >
-      {/* corner brackets — follow the card's rounded border */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute left-[-1px] top-[-1px] m-0 h-4 w-4 border-l-2 border-t-2"
-        style={{ borderColor: color, borderTopLeftRadius: "var(--radius-soft)" }}
-      />
-      <span
-        aria-hidden
-        className="pointer-events-none absolute right-[-1px] top-[-1px] m-0 h-4 w-4 border-r-2 border-t-2"
-        style={{ borderColor: color, borderTopRightRadius: "var(--radius-soft)" }}
-      />
-      <span
-        aria-hidden
-        className="pointer-events-none absolute bottom-[-1px] left-[-1px] m-0 h-4 w-4 border-b-2 border-l-2"
-        style={{ borderColor: color, borderBottomLeftRadius: "var(--radius-soft)" }}
-      />
-      <span
-        aria-hidden
-        className="pointer-events-none absolute bottom-[-1px] right-[-1px] m-0 h-4 w-4 border-b-2 border-r-2"
-        style={{ borderColor: color, borderBottomRightRadius: "var(--radius-soft)" }}
-      />
-      {/* accent tape */}
-      <span
-        aria-hidden
-        className="absolute -top-3 left-6 rotate-[-2deg] px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-paper"
-        style={{ background: color }}
-      >
-        · · ·
-      </span>
       {children}
     </section>
   );
@@ -544,7 +490,7 @@ function PanelCard({
 function FieldLabel({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="font-mono text-xs uppercase tracking-widest text-ink-soft">{label}</span>
+      <span className="text-[10px] uppercase tracking-[0.16em] text-ink-soft">{label}</span>
       {children}
     </label>
   );
@@ -552,10 +498,7 @@ function FieldLabel({ label, children }: { label: string; children: React.ReactN
 
 function PrimaryBtn({ children }: { children: React.ReactNode }) {
   return (
-    <button
-      className="ink-glow group inline-flex items-center gap-2 bg-ink px-6 py-2.5 font-editorial text-base text-primary-foreground shadow-[var(--shadow-2)] transition-all duration-300 ease-[var(--ease-out-soft)] hover:-translate-y-[1px] hover:shadow-[var(--shadow-warm)]"
-      style={{ borderRadius: "var(--radius-soft)" }}
-    >
+    <button className="btn-primary group">
       {children}
       <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">
         →
@@ -565,21 +508,14 @@ function PrimaryBtn({ children }: { children: React.ReactNode }) {
 }
 
 function SavedMark() {
-  return (
-    <span className="font-hand text-2xl text-sage" style={{ fontFamily: "var(--font-hand)" }}>
-      — сохранено
-    </span>
-  );
+  return <span className="text-[11px] uppercase tracking-[0.14em] text-ink-soft">— сохранено</span>;
 }
 
 function Msg({ tone, children }: { tone: "ok" | "err"; children: React.ReactNode }) {
   return (
     <span
-      className="font-hand text-2xl"
-      style={{
-        fontFamily: "var(--font-hand)",
-        color: tone === "ok" ? "var(--color-sage)" : "var(--color-terra)",
-      }}
+      className="text-[11px] uppercase tracking-[0.14em]"
+      style={{ color: tone === "ok" ? "var(--purple)" : "#a15c6a" }}
     >
       — {children}
     </span>
@@ -624,74 +560,61 @@ function ForgotPasswordModal({
       aria-modal="true"
     >
       <div
-        className="relative w-full max-w-md border border-border bg-paper p-8"
-        style={{ borderRadius: "var(--radius-soft)", boxShadow: "var(--shadow-3)" }}
+        className="relative w-full max-w-md rounded-2xl border border-ink/10 bg-cream p-8 shadow-[var(--shadow-4)]"
         onClick={(e) => e.stopPropagation()}
       >
-        <span aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-terra" />
         <button
           type="button"
           onClick={onClose}
           aria-label="Закрыть"
-          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center text-ink-soft hover:text-terra"
+          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-mint hover:text-ink"
         >
           <X size={18} />
         </button>
 
-        <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-terra">
-          <span className="inline-block h-px w-8 bg-terra" />
+        <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.18em] text-purple/75">
+          <span className="inline-block h-px w-8 bg-purple/50" />
           Восстановление
         </div>
-        <h3 className="mt-3 font-editorial text-3xl leading-tight">
+        <h3 className="mt-3 text-[28px] leading-tight font-light">
           {sent ? "Проверьте почту" : "Забыли пароль?"}
         </h3>
 
         {sent ? (
           <>
-            <p className="mt-3 text-sm text-ink-soft">
+            <p className="mt-3 text-[13px] leading-relaxed text-ink-soft">
               Мы отправили ссылку на восстановление на <span className="text-ink">{email}</span>.
               Перейдите по ней, чтобы задать новый пароль.
             </p>
-            <button
-              type="button"
-              onClick={onClose}
-              className="ink-glow mt-6 inline-flex items-center gap-2 bg-ink px-5 py-2 font-editorial text-base text-primary-foreground transition-transform hover:-translate-y-[1px]"
-              style={{ borderRadius: "var(--radius-soft)", boxShadow: "var(--shadow-2)" }}
-            >
+            <button type="button" onClick={onClose} className="btn-primary mt-6">
               Понятно
             </button>
           </>
         ) : (
           <form onSubmit={send} className="mt-5 space-y-4">
-            <p className="text-sm text-ink-soft">
+            <p className="text-[13px] leading-relaxed text-ink-soft">
               Введите почту от аккаунта — пришлём ссылку для сброса пароля.
             </p>
             <label className="block">
-              <span className="font-mono text-xs uppercase tracking-widest text-ink-soft">
-                Почта
-              </span>
+              <span className="text-[10px] uppercase tracking-[0.16em] text-ink-soft">Почта</span>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoFocus
                 placeholder="you@example.com"
-                className="mt-2 w-full border-b border-ink/25 bg-transparent py-2 font-editorial text-2xl outline-none focus:border-terra"
+                className="account-input mt-2 w-full px-4 py-3 text-[16px]"
               />
-              {err && <span className="mt-2 block font-mono text-xs text-terra">{err}</span>}
+              {err && <span className="mt-2 block text-xs text-[#a15c6a]">{err}</span>}
             </label>
             <div className="flex items-baseline gap-4 pt-2">
-              <button
-                type="submit"
-                className="ink-glow inline-flex items-center gap-2 bg-ink px-5 py-2 font-editorial text-base text-primary-foreground transition-transform hover:-translate-y-[1px]"
-                style={{ borderRadius: "var(--radius-soft)", boxShadow: "var(--shadow-2)" }}
-              >
+              <button type="submit" className="btn-primary">
                 Отправить ссылку
               </button>
               <button
                 type="button"
                 onClick={onClose}
-                className="font-mono text-xs uppercase tracking-widest text-ink-soft underline underline-offset-4 hover:text-terra"
+                className="text-[10px] uppercase tracking-[0.14em] text-ink-soft underline underline-offset-4 transition-colors hover:text-purple"
               >
                 Отмена
               </button>

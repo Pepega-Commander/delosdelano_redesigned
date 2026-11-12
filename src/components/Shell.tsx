@@ -3,7 +3,15 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Bell, Menu, X } from "lucide-react";
 import { store, type User } from "@/lib/storage";
 import { SoundToggle } from "@/components/SoundToggle";
-import { ThemeToggle } from "@/components/ThemeToggle";
+
+const NAV_ITEMS = [
+  { to: "/", label: "Главная" },
+  { to: "/deals", label: "Мои дела" },
+  { to: "/focus", label: "Фокус" },
+  { to: "/plans", label: "Каталог планов" },
+  { to: "/about", label: "О нас" },
+  { to: "/contacts", label: "Контакты" },
+] as const;
 
 export function Shell({
   children,
@@ -62,97 +70,106 @@ export function Shell({
   return (
     <div className="min-h-screen">
       <header
-        className={`sticky top-0 z-40 border-b border-ink/15 bg-paper transition-shadow duration-300 ease-[var(--ease-out-soft)] ${scrolled ? "shadow-[var(--shadow-2)]" : ""}`}
+        className={`sticky top-0 z-40 bg-lav text-ink transition-shadow duration-300 ease-[var(--ease-out-soft)] ${scrolled ? "shadow-[var(--shadow-2)]" : ""}`}
       >
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
-          <Link to="/" className="flex items-baseline gap-2">
-            <span className="font-serif text-2xl font-bold tracking-tight">DeloSdelano</span>
-            <span
-              className="hidden font-hand text-lg text-terra md:inline"
-              style={{ fontFamily: "var(--font-hand)" }}
-            >
-              — дневник
-            </span>
+        <div className="mx-auto flex h-[58px] max-w-[1360px] items-center gap-4 px-5 md:px-8">
+          <Link
+            to="/"
+            className="shrink-0 text-[21px] leading-none tracking-[-0.01em] transition-opacity hover:opacity-75"
+          >
+            DeloSdelano
           </Link>
 
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <button
-                aria-label="Уведомления"
-                onClick={() => {
-                  setNotifOpen((v) => !v);
-                  if (!notifOpen) store.markNotificationsRead();
-                }}
-                className="relative border border-border bg-card p-2 hover:border-terra"
+          <nav className="ml-4 hidden flex-1 items-center justify-center gap-5 text-[12.5px] leading-none lg:flex xl:gap-7">
+            {NAV_ITEMS.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                className="nav-link whitespace-nowrap opacity-80 transition-opacity hover:opacity-100"
+                activeOptions={{ exact: item.to === "/" }}
               >
-                <Bell size={18} />
-                {unread > 0 && (
-                  <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center bg-terra px-1 font-mono text-xs text-primary-foreground">
-                    {unread}
-                  </span>
-                )}
-              </button>
-              {notifOpen && (
-                <div className="absolute right-0 mt-2 w-80 border border-border bg-card p-4 shadow-lg">
-                  <div className="font-mono text-xs uppercase tracking-widest text-ink-soft">
-                    Уведомления
-                  </div>
-                  {notifs.length === 0 ? (
-                    <p className="mt-3 text-sm text-ink-soft">Пока пусто.</p>
-                  ) : (
-                    <ul className="mt-3 space-y-3">
-                      {notifs.slice(0, 6).map((n) => (
-                        <li key={n.id} className="border-b border-border pb-2 text-sm">
-                          {n.text}
-                          <div className="mt-1 font-mono text-xs text-ink-soft">
-                            {new Date(n.at).toLocaleString("ru-RU")}
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="relative ml-auto flex items-center gap-4">
+            <button
+              aria-label="Уведомления"
+              onClick={() => {
+                setNotifOpen((v) => !v);
+                if (!notifOpen) store.markNotificationsRead();
+              }}
+              className="flex items-center gap-2.5 transition-opacity hover:opacity-75"
+            >
+              <Bell size={18} strokeWidth={1.6} />
+              {unread > 0 && (
+                <span className="flex h-[22px] min-w-[22px] items-center justify-center rounded-full bg-mint px-1 text-[11px] leading-none text-ink">
+                  {unread}
+                </span>
               )}
-            </div>
+            </button>
 
             <button
               aria-label="Меню"
               onClick={() => setMenuOpen(true)}
-              className="flex items-center gap-2 border border-border bg-card p-1.5 pr-2 transition-colors hover:border-terra"
+              className="transition-opacity hover:opacity-75"
             >
-              <Avatar user={user} size={24} />
-              <Menu size={16} />
+              <Menu size={22} strokeWidth={1.6} />
             </button>
+
+            {notifOpen && (
+              <div className="absolute right-0 top-[42px] w-[320px] rounded-xl border border-ink/15 bg-cream p-5 text-ink shadow-[var(--shadow-3)]">
+                <div className="eyebrow">Уведомления</div>
+                {notifs.length === 0 ? (
+                  <p className="mt-3 text-[13px] text-ink-soft">Пока пусто.</p>
+                ) : (
+                  <ul className="mt-3 space-y-3">
+                    {notifs.slice(0, 6).map((n) => (
+                      <li key={n.id} className="border-b border-ink/10 pb-2.5 text-[13px]">
+                        {n.text}
+                        <div className="mt-1 text-[10px] uppercase tracking-[0.14em] text-ink/50">
+                          {new Date(n.at).toLocaleString("ru-RU")}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </header>
 
       {menuOpen && (
         <div
-          className="fixed inset-0 z-50 backdrop-blur-sm"
-          style={{ background: "color-mix(in oklab, #000 55%, transparent)" }}
+          className="fixed inset-0 z-50 bg-deep/45 backdrop-blur-[2px]"
           onClick={() => setMenuOpen(false)}
         >
           <aside
-            className="absolute right-0 top-0 flex h-full w-80 flex-col border-l border-border bg-paper p-6"
+            className="absolute right-0 top-0 flex h-full w-[360px] max-w-[92vw] flex-col rounded-l-2xl bg-cream p-7 text-ink shadow-[var(--shadow-4)]"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-baseline justify-between">
-              <div className="font-mono text-xs uppercase tracking-widest text-terra">Меню</div>
-              <button onClick={() => setMenuOpen(false)} aria-label="Закрыть">
-                <X size={20} />
+            <div className="flex items-center justify-between">
+              <div className="eyebrow">Меню</div>
+              <button
+                onClick={() => setMenuOpen(false)}
+                aria-label="Закрыть"
+                className="text-ink/70 transition-opacity hover:opacity-50"
+              >
+                <X size={20} strokeWidth={1.6} />
               </button>
             </div>
 
-            <div className="mt-6 border-b border-border pb-4">
+            <div className="mt-7 border-b border-ink/12 pb-6">
               {user ? (
-                <div className="flex items-center gap-3">
-                  <Avatar user={user} size={44} />
+                <div className="flex items-center gap-3.5">
+                  <Avatar user={user} size={46} />
                   <div>
-                    <div className="font-editorial text-xl leading-tight">Привет, {user.name}</div>
+                    <div className="text-[19px] leading-tight">Привет, {user.name}</div>
                     <button
                       onClick={logout}
-                      className="mt-1 font-mono text-xs uppercase tracking-widest text-ink-soft underline underline-offset-4 hover:text-terra"
+                      className="mt-1 text-[11px] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:text-purple"
                     >
                       Выйти
                     </button>
@@ -160,28 +177,22 @@ export function Shell({
                 </div>
               ) : (
                 <div>
-                  <div className="font-mono text-xs uppercase tracking-[0.2em] text-ink-soft">
+                  <div className="text-[11px] uppercase tracking-[0.18em] text-ink-soft">
                     Вы не вошли
                   </div>
                   <Link
                     to="/account"
                     onClick={() => setMenuOpen(false)}
-                    className="ink-glow group mt-3 inline-flex w-full items-center justify-between gap-2 bg-ink px-4 py-2.5 font-editorial text-base text-primary-foreground shadow-[var(--shadow-2)] transition-all duration-300 ease-[var(--ease-out-soft)] hover:-translate-y-[1px] hover:shadow-[var(--shadow-warm)]"
-                    style={{ borderRadius: "var(--radius-soft)" }}
+                    className="btn-primary mt-4 w-full justify-between"
                   >
                     Войти
-                    <span
-                      aria-hidden
-                      className="transition-transform duration-300 group-hover:translate-x-1"
-                    >
-                      →
-                    </span>
+                    <span aria-hidden>↗</span>
                   </Link>
                 </div>
               )}
             </div>
 
-            <nav className="mt-6 flex flex-col gap-4 text-lg">
+            <nav className="mt-7 flex flex-col gap-[18px] text-[20px] leading-none">
               {user && (
                 <MenuLink to="/account" onClick={() => setMenuOpen(false)}>
                   Аккаунт
@@ -197,7 +208,7 @@ export function Shell({
                 <Link
                   to="/quiz"
                   onClick={() => setMenuOpen(false)}
-                  className="-mt-2 inline-block font-mono text-xs text-terra underline underline-offset-4"
+                  className="inline-block text-[12px] uppercase tracking-[0.16em] text-purple underline decoration-purple/30 underline-offset-4"
                 >
                   Пройти опрос →
                 </Link>
@@ -209,18 +220,17 @@ export function Shell({
                 Контакты
               </MenuLink>
               <div className="flex items-baseline gap-2 text-ink-soft">
-                <span className="font-serif text-xl">Обсуждения</span>
-                <span className="font-mono text-xs uppercase text-mustard">W.I.P.</span>
+                <span>Обсуждения</span>
+                <span className="text-[10px] uppercase tracking-[0.16em] text-purple/70">
+                  W.I.P.
+                </span>
               </div>
               <MenuLink to="/about" onClick={() => setMenuOpen(false)}>
                 О нас
               </MenuLink>
             </nav>
 
-            <div
-              className="mt-auto pt-6 font-hand text-xl text-terra"
-              style={{ fontFamily: "var(--font-hand)" }}
-            >
+            <div className="mt-auto pt-8 text-[13px] leading-relaxed text-ink-soft">
               Один шаг сегодня — больше, чем сто в планах.
             </div>
           </aside>
@@ -230,46 +240,36 @@ export function Shell({
       <main>{children}</main>
 
       {showFooter && (
-        <footer id="footer" className="mt-24 bg-ink text-paper">
-          <div className="h-2 w-full bg-highlight" />
-          <div className="mx-auto grid max-w-6xl gap-10 px-6 py-16 md:grid-cols-3">
+        <footer id="footer" className="mt-24 bg-deep text-on-dark">
+          <div className="mx-auto grid max-w-[1360px] gap-10 px-6 py-16 md:grid-cols-3 md:px-8">
             <div>
-              <div className="font-display text-3xl font-black uppercase tracking-tight">
-                DeloSdelano
-              </div>
-              <p className="mt-4 text-sm opacity-80">
+              <div className="text-[25px] leading-none">DeloSdelano</div>
+              <p className="mt-4 max-w-[280px] text-[13px] leading-relaxed text-on-dark/70">
                 Тёплый инструмент самопознания. Без уведомлений и без давления.
               </p>
             </div>
             <div>
-              <div className="font-mono text-xs uppercase tracking-widest text-highlight">
-                О нас
-              </div>
-              <p className="mt-4 text-sm opacity-80">
+              <div className="text-[10px] uppercase tracking-[0.2em] text-mint/80">О нас</div>
+              <p className="mt-4 max-w-[340px] text-[13px] leading-relaxed text-on-dark/75">
                 Небольшая команда практикующих психологов и дизайнеров. Мы верим, что прокрастинация
                 — не порок, а сигнал.
               </p>
             </div>
             <div>
-              <div className="font-mono text-xs uppercase tracking-widest text-highlight">
-                Контакты
-              </div>
-              <ul className="mt-4 space-y-2 font-display text-lg font-bold uppercase tracking-tight">
+              <div className="text-[10px] uppercase tracking-[0.2em] text-mint/80">Контакты</div>
+              <ul className="mt-4 space-y-2 text-[15px] leading-relaxed">
                 <li>hello@delosdelano.ru</li>
                 <li>tg: @delosdelano</li>
-                <li className="text-sm font-normal normal-case opacity-80">
-                  Москва · Санкт-Петербург
-                </li>
+                <li className="text-[12px] text-on-dark/65">Москва · Санкт-Петербург</li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-paper/20 px-6 py-4 text-center font-mono text-xs opacity-60">
+          <div className="border-t border-on-dark/15 px-6 py-5 text-center text-[10px] uppercase tracking-[0.16em] text-on-dark/55">
             © 2026 · Это не диагноз. Это инструмент самопознания.
           </div>
         </footer>
       )}
       <SoundToggle />
-      <ThemeToggle />
     </div>
   );
 }
@@ -287,8 +287,8 @@ function MenuLink({
     <Link
       to={to}
       onClick={onClick}
-      className="font-serif text-xl hover:text-terra"
-      activeProps={{ className: "font-serif text-xl text-terra" }}
+      className="w-fit transition-colors hover:text-purple"
+      activeProps={{ className: "text-purple" }}
     >
       {children}
     </Link>
@@ -300,12 +300,11 @@ function Avatar({ user, size }: { user: User | null; size: number }) {
   return (
     <span
       aria-hidden
-      className="inline-flex shrink-0 items-center justify-center overflow-hidden border border-border bg-paper-dark font-editorial text-ink-soft"
+      className="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-ink/15 bg-mint text-ink"
       style={{
         width: size,
         height: size,
-        borderRadius: "var(--radius-pill)",
-        fontSize: Math.round(size * 0.42),
+        fontSize: Math.round(size * 0.38),
       }}
     >
       {user?.avatar ? (

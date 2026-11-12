@@ -100,27 +100,16 @@ const TEAM: Member[] = [
   },
 ];
 
-const TONE: Record<Tone, { bg: string; text: string; tape: string; chip: string }> = {
+const TONE: Record<Tone, { bg: string; text: string; chip: string }> = {
   terra: {
-    bg: "bg-terra/15",
-    text: "text-terra",
-    tape: "var(--terra)",
-    chip: "border-terra text-terra",
+    bg: "bg-purple/10",
+    text: "text-purple",
+    chip: "border-purple/40 text-purple",
   },
-  sage: { bg: "bg-sage/20", text: "text-sage", tape: "var(--sage)", chip: "border-sage text-sage" },
-  mustard: {
-    bg: "bg-mustard/25",
-    text: "text-mustard",
-    tape: "var(--mustard)",
-    chip: "border-mustard text-mustard",
-  },
-  ink: { bg: "bg-ink/10", text: "text-ink", tape: "var(--ink)", chip: "border-ink text-ink" },
-  pink: {
-    bg: "[background-color:color-mix(in_oklab,#ec4899_18%,transparent)]",
-    text: "[color:#d1477a]",
-    tape: "#f9a8d4",
-    chip: "[border-color:#d1477a] [color:#d1477a]",
-  },
+  sage: { bg: "bg-lav/20", text: "text-ink", chip: "border-lav/60 text-ink" },
+  mustard: { bg: "bg-mint", text: "text-ink", chip: "border-mint text-ink" },
+  ink: { bg: "bg-deep/10", text: "text-deep", chip: "border-deep/40 text-deep" },
+  pink: { bg: "bg-mint/70", text: "text-purple", chip: "border-purple/40 text-purple" },
 };
 
 function AboutPage() {
@@ -132,21 +121,21 @@ function AboutPage() {
       <section className="relative mx-auto w-full max-w-[1400px] px-6 py-16 md:px-10 md:py-24">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.24em] text-terra">
-            <span className="inline-block h-px w-8 bg-terra" />
+          <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-purple/80">
+            <span className="inline-block h-px w-8 bg-purple/60" />
             Досье · команда
           </div>
-          <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-ink-soft">
+          <div className="text-[10px] uppercase tracking-[0.2em] text-ink-soft">
             04 / 04 · Екатеринбург
           </div>
         </div>
 
-        <h1 className="text-balance mt-8 font-editorial text-5xl leading-[0.98] md:text-[92px]">
+        <h1 className="text-balance mt-8 text-[46px] leading-[1.02] font-light tracking-[-0.02em] md:text-[88px]">
           Четверо, кто делает
           <br />
-          <span className="italic text-terra">DeloSdelano.</span>
+          <span className="text-purple">DeloSdelano.</span>
         </h1>
-        <p className="mt-6 max-w-2xl font-serif text-lg leading-relaxed text-ink-soft md:text-xl">
+        <p className="mt-6 max-w-2xl text-[14px] leading-[1.75] text-ink-soft md:text-[15px]">
           Разложили на столе: возьмите карточку — откроется досье. Ничего лишнего, только имена,
           роли и показания под протокол.
         </p>
@@ -163,12 +152,9 @@ function AboutPage() {
 
         <Timeline />
 
-        <div className="mt-20 flex flex-col items-start justify-between gap-4 border-t border-border pt-8 font-mono text-[11px] uppercase tracking-[0.24em] text-ink-soft md:flex-row md:items-center">
+        <div className="mt-20 flex flex-col items-start justify-between gap-4 border-t border-ink/10 pt-8 text-[10px] uppercase tracking-[0.2em] text-ink-soft md:flex-row md:items-center">
           <span>© DeloSdelano</span>
-          <span
-            className="font-hand text-2xl normal-case tracking-normal text-terra"
-            style={{ fontFamily: "var(--font-hand)" }}
-          >
+          <span className="text-[11px] normal-case tracking-[0.08em] text-purple">
             Клик по карточке — откроется досье.
           </span>
         </div>
@@ -201,40 +187,30 @@ function Timeline() {
   return (
     <section aria-label="История команды" className="mt-24 md:mt-32">
       <div className="flex items-baseline justify-between">
-        <div className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.24em] text-terra">
-          <span className="inline-block h-px w-8 bg-terra" />
+        <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-purple/80">
+          <span className="inline-block h-px w-8 bg-purple/60" />
           Хронология
         </div>
-        <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-ink-soft">
-          прокрути →
-        </div>
+        <div className="text-[10px] uppercase tracking-[0.2em] text-ink-soft">прокрути →</div>
       </div>
       <div className="relative mt-8 -mx-6 md:-mx-10">
-        <div className="flex snap-x snap-mandatory justify-center gap-6 overflow-x-auto px-6 pb-6 md:px-10 [scrollbar-width:thin]">
+        <div className="no-scrollbar flex snap-x snap-mandatory justify-center gap-4 overflow-x-auto px-6 pb-6 md:px-10">
           {items.map((it, i) => {
             const t = TONE[it.tone];
             return (
               <article
                 key={it.year}
-                className="relative w-[280px] shrink-0 snap-start border-2 border-ink bg-paper p-5 md:w-[360px]"
-                style={{
-                  boxShadow: "6px 8px 0 -2px color-mix(in oklab, var(--ink) 15%, transparent)",
-                }}
+                className="relative w-[290px] shrink-0 snap-start rounded-xl border border-ink/10 bg-cream p-6 md:w-[360px]"
               >
                 <div
-                  className={`inline-block border-2 px-2 py-0.5 font-mono text-xs uppercase tracking-widest ${t.chip}`}
+                  className={`inline-block rounded-full border px-2.5 py-1 text-[9px] uppercase tracking-[0.14em] ${t.chip}`}
                 >
                   этап {String(i + 1).padStart(2, "0")}
                 </div>
-                <div className={`mt-4 font-editorial text-6xl leading-none ${t.text}`}>
+                <div className={`mt-4 text-[38px] leading-none font-light ${t.text}`}>
                   {it.year}
                 </div>
-                <p className="mt-4 font-serif text-base leading-snug text-ink-soft">{it.text}</p>
-                <span
-                  aria-hidden
-                  className="absolute -top-2 left-6 h-4 w-10"
-                  style={{ background: `color-mix(in oklab, ${t.tape} 70%, transparent)` }}
-                />
+                <p className="mt-4 text-[13px] leading-[1.7] text-ink-soft">{it.text}</p>
               </article>
             );
           })}
@@ -255,57 +231,39 @@ function Polaroid({ m, onOpen }: { m: Member; onOpen: () => void }) {
         play("open");
         onOpen();
       }}
-      className={`group relative block w-full text-left transition-transform duration-300 hover:!rotate-0 hover:-translate-y-1 ${m.rotate} ${m.offsetY}`}
+      className="group relative block w-full text-left transition-transform duration-300 hover:-translate-y-1.5"
     >
-      <div
-        className="relative border border-ink bg-paper p-3 pb-6"
-        style={{
-          boxShadow:
-            "8px 10px 0 -2px color-mix(in oklab, var(--ink) 12%, transparent), 0 20px 40px -20px color-mix(in oklab, var(--ink) 40%, transparent)",
-        }}
-      >
-        {/* Tape */}
-        <span
-          aria-hidden
-          className={`absolute z-10 h-5 w-16 ${m.tapeOffset}`}
-          style={{
-            background: `color-mix(in oklab, ${t.tape} 70%, transparent)`,
-            boxShadow: "0 1px 0 color-mix(in oklab, var(--ink) 20%, transparent)",
-          }}
-        />
+      <div className="rounded-xl border border-ink/10 bg-cream p-3 shadow-[var(--shadow-1)] transition-shadow duration-300 group-hover:shadow-[var(--shadow-3)]">
         {/* Photo area */}
         <div
-          className={`relative flex aspect-[4/5] w-full items-center justify-center overflow-hidden border border-ink/20 ${t.bg}`}
+          className={`relative flex aspect-[4/5] w-full items-center justify-center overflow-hidden rounded-lg ${t.bg}`}
         >
           <span
             aria-hidden
-            className="absolute inset-0 opacity-[0.15]"
+            className="absolute inset-0 opacity-[0.12]"
             style={{
               backgroundImage:
                 "radial-gradient(circle at 20% 20%, var(--ink) 1px, transparent 1px), radial-gradient(circle at 80% 60%, var(--ink) 1px, transparent 1px)",
               backgroundSize: "18px 18px, 22px 22px",
             }}
           />
-          <span className={`font-editorial text-6xl md:text-7xl ${t.text}`}>{m.initials}</span>
-          <span className="absolute left-2 top-2 font-mono text-[9px] uppercase tracking-widest text-ink-soft">
+          <span className={`text-6xl font-light md:text-7xl ${t.text}`}>{m.initials}</span>
+          <span className="absolute left-3 top-3 text-[8px] uppercase tracking-[0.16em] text-ink/45">
             {m.fileNo}
           </span>
-          <span className="absolute bottom-2 right-2 font-mono text-[9px] uppercase tracking-widest text-ink-soft">
+          <span className="absolute bottom-3 right-3 text-[8px] uppercase tracking-[0.16em] text-ink/45">
             04·2026
           </span>
         </div>
         {/* Caption */}
-        <div className="mt-4 flex flex-col gap-1 px-1">
-          <span
-            className="font-hand text-5xl leading-none text-ink"
-            style={{ fontFamily: "var(--font-hand)" }}
-          >
-            {m.name}
+        <div className="px-1 pb-1 pt-4">
+          <span className="block text-[24px] leading-none font-light text-ink">{m.name}</span>
+          <span className={`mt-1.5 block text-[10px] uppercase tracking-[0.16em] ${t.text}`}>
+            {m.role}
           </span>
-          <span className={`font-mono text-sm uppercase tracking-widest ${t.text}`}>{m.role}</span>
-        </div>
-        <div className="mt-2 px-1 font-mono text-xs uppercase tracking-[0.2em] text-ink-muted-2 opacity-0 transition-opacity group-hover:opacity-100">
-          Открыть досье →
+          <span className="mt-3 block text-[9px] uppercase tracking-[0.16em] text-ink/40 opacity-0 transition-opacity group-hover:opacity-100">
+            Открыть досье →
+          </span>
         </div>
       </div>
     </button>
@@ -335,13 +293,10 @@ function DossierDrawer({ member, onClose }: { member: Member | null; onClose: ()
       >
         <div
           onClick={(e) => e.stopPropagation()}
-          className={`relative flex max-h-[90vh] w-full max-w-lg flex-col border-2 border-ink bg-paper transition-all duration-300 ease-out ${
+          className={`relative flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-ink/10 bg-paper transition-all duration-300 ease-out ${
             isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
           }`}
-          style={{
-            boxShadow:
-              "12px 14px 0 -2px color-mix(in oklab, var(--ink) 20%, transparent), 0 40px 80px -30px color-mix(in oklab, var(--ink) 50%, transparent)",
-          }}
+          style={{ boxShadow: "var(--shadow-4)" }}
         >
           {member && <DossierContent key={member.id} m={member} onClose={onClose} />}
           {member && <ClassifiedStamp memberId={member.id} />}
@@ -382,12 +337,12 @@ function ClassifiedStamp({ memberId }: { memberId: string }) {
       }}
     >
       <div
-        className="border-[3px] px-4 py-1.5 font-mono text-xl font-black uppercase tracking-[0.24em]"
+        className="border-[3px] px-4 py-1.5 text-xl font-normal uppercase tracking-[0.24em]"
         style={{
-          borderColor: "#c8391f",
-          color: "#c8391f",
+          borderColor: "var(--purple)",
+          color: "var(--purple)",
           borderStyle: "double",
-          background: "color-mix(in oklab, #c8391f 6%, transparent)",
+          background: "color-mix(in oklab, var(--purple) 7%, transparent)",
         }}
       >
         СЕКРЕТНО
@@ -401,8 +356,8 @@ function DossierContent({ m, onClose }: { m: Member; onClose: () => void }) {
   return (
     <div className="flex h-full flex-col overflow-y-auto">
       {/* Top strip */}
-      <div className="dossier-strip flex items-center justify-between border-b-2 border-ink bg-ink px-6 py-3 text-primary-foreground">
-        <div className="font-mono text-[11px] uppercase tracking-[0.24em]">
+      <div className="dossier-strip flex items-center justify-between border-b border-ink/10 bg-purple px-6 py-3.5 text-on-dark">
+        <div className="text-[9px] uppercase tracking-[0.18em]">
           Досье {m.fileNo} · для служебного пользования
         </div>
         <button
@@ -411,7 +366,7 @@ function DossierContent({ m, onClose }: { m: Member; onClose: () => void }) {
             play("close");
             onClose();
           }}
-          className="font-mono text-xs uppercase tracking-widest hover:text-highlight"
+          className="text-[9px] uppercase tracking-[0.16em] transition-colors hover:text-mint"
           aria-label="Закрыть досье"
         >
           ✕ закрыть
@@ -422,69 +377,51 @@ function DossierContent({ m, onClose }: { m: Member; onClose: () => void }) {
         {/* Watermark */}
         <span
           aria-hidden
-          className={`pointer-events-none absolute right-4 top-6 select-none font-editorial font-black leading-none ${t.text}`}
-          style={{ fontSize: "8rem", opacity: 0.08 }}
+          className={`pointer-events-none absolute right-4 top-6 select-none text-[7rem] font-light leading-none ${t.text}`}
+          style={{ opacity: 0.08 }}
         >
           {m.initials}
         </span>
 
-        <div className="font-mono text-sm uppercase tracking-[0.24em] text-ink-soft">субъект</div>
-        <h2 className="mt-2 font-editorial text-5xl leading-none md:text-6xl">{m.name}</h2>
-        <div className={`mt-3 font-mono text-base uppercase tracking-widest ${t.text}`}>
-          {m.role}
-        </div>
+        <div className="text-[9px] uppercase tracking-[0.2em] text-ink-soft">субъект</div>
+        <h2 className="mt-2 text-[40px] leading-none font-light md:text-[46px]">{m.name}</h2>
+        <div className={`mt-3 text-[12px] uppercase tracking-[0.16em] ${t.text}`}>{m.role}</div>
 
         {/* Status stamp */}
         <div className="mt-6 inline-flex items-center gap-2">
           <span
-            className={`inline-flex items-center border-2 px-4 py-1.5 font-mono text-sm uppercase tracking-[0.24em] ${t.chip}`}
-            style={{
-              transform: "rotate(-3deg)",
-              borderStyle: "double",
-            }}
+            className={`inline-flex items-center rounded-full border px-3.5 py-1.5 text-[9px] uppercase tracking-[0.16em] ${t.chip}`}
           >
             статус · {m.status}
           </span>
         </div>
 
         {/* Meta table */}
-        <dl className="mt-8 grid grid-cols-3 gap-y-3 border-y border-border py-4 font-mono text-sm uppercase tracking-widest">
+        <dl className="mt-8 grid grid-cols-3 gap-y-3 border-y border-ink/10 py-4 text-[10px] uppercase tracking-[0.16em]">
           <dt className="text-ink-soft">локация</dt>
           <dd className="col-span-2 text-ink">Екатеринбург</dd>
         </dl>
 
         {/* Quote */}
         <div className="mt-8">
-          <div className="font-mono text-sm uppercase tracking-[0.24em] text-ink-soft">
-            показания
-          </div>
-          <blockquote
-            className="mt-3 border-l-4 pl-4 font-editorial text-3xl italic leading-snug text-ink"
-            style={{ borderColor: t.tape }}
-          >
+          <div className="text-[9px] uppercase tracking-[0.2em] text-ink-soft">показания</div>
+          <blockquote className="mt-3 border-l-2 border-purple/40 pl-4 text-[24px] leading-snug font-light text-ink">
             «{m.quote}»
           </blockquote>
         </div>
 
         {/* Bio */}
         <div className="mt-8">
-          <div className="font-mono text-sm uppercase tracking-[0.24em] text-ink-soft">
+          <div className="text-[9px] uppercase tracking-[0.2em] text-ink-soft">
             заметка следователя
           </div>
-          <p className="mt-3 font-serif text-lg leading-relaxed text-ink-soft">{m.bio}</p>
+          <p className="mt-3 text-[13.5px] leading-[1.75] text-ink-soft">{m.bio}</p>
         </div>
 
         {/* Sign-off */}
-        <div className="mt-10 flex items-end justify-between border-t border-dashed border-border pt-4">
-          <span className="font-mono text-sm uppercase tracking-[0.24em] text-ink-soft">
-            подписано
-          </span>
-          <span
-            className="font-hand text-3xl text-terra"
-            style={{ fontFamily: "var(--font-hand)" }}
-          >
-            DeloSdelano
-          </span>
+        <div className="mt-10 flex items-end justify-between border-t border-ink/10 pt-4">
+          <span className="text-[9px] uppercase tracking-[0.2em] text-ink-soft">подписано</span>
+          <span className="text-xl text-purple">DeloSdelano</span>
         </div>
       </div>
     </div>

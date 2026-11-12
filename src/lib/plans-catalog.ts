@@ -69,12 +69,12 @@ export function planChapters(id: string): Chapter[] {
 export function accentClasses(accent: PlanAccent) {
   switch (accent) {
     case "terra":
-      return { bg: "bg-terra", text: "text-terra", border: "border-terra" };
+      return { bg: "bg-purple", text: "text-purple", border: "border-purple" };
     case "sage":
-      return { bg: "bg-sage", text: "text-sage", border: "border-sage" };
+      return { bg: "bg-lav", text: "text-ink", border: "border-lav" };
     case "mustard":
-      return { bg: "bg-mustard", text: "text-mustard", border: "border-mustard" };
+      return { bg: "bg-mint", text: "text-ink", border: "border-mint" };
     case "ink":
-      return { bg: "bg-ink", text: "text-ink", border: "border-ink" };
+      return { bg: "bg-deep", text: "text-deep", border: "border-deep" };
   }
 }

@@ -28,8 +28,8 @@ export const Route = createFileRoute("/plans/$planId")({
   notFoundComponent: () => (
     <Shell>
       <div className="mx-auto max-w-md px-6 py-24 text-center">
-        <div className="font-mono text-xs uppercase tracking-widest text-terra">404</div>
-        <h1 className="mt-3 font-editorial text-4xl">Такого плана нет</h1>
+        <div className="text-[10px] uppercase tracking-[0.18em] text-purple/75">404</div>
+        <h1 className="mt-3 text-[32px] font-light">Такого плана нет</h1>
         <Link to="/plans" className="btn-link mt-6 inline-block">
           К каталогу →
         </Link>
@@ -39,7 +39,7 @@ export const Route = createFileRoute("/plans/$planId")({
   errorComponent: ({ reset }) => (
     <Shell>
       <div className="mx-auto max-w-md px-6 py-24 text-center">
-        <h1 className="font-editorial text-3xl">Что-то пошло не так</h1>
+        <h1 className="text-[28px] font-light">Что-то пошло не так</h1>
         <button onClick={reset} className="btn-link mt-4">
           Попробовать снова
         </button>
@@ -222,16 +222,14 @@ function Reader({ name, planId }: { name: string; planId: string }) {
 
   return (
     <div
-      className="mx-auto grid max-w-6xl gap-0 px-0"
-      style={{ gridTemplateColumns: sidebarOpen ? "280px 1fr" : "0 1fr" }}
+      className="plan-reader mx-auto max-w-6xl px-0"
+      style={{ ["--sidebar-w" as string]: sidebarOpen ? "280px" : "0px" }}
     >
       {/* Sidebar */}
       <aside
         className={[
-          "border-r border-border bg-paper-dark/40 md:sticky md:top-[73px] md:h-[calc(100vh-73px)] md:overflow-y-auto transition-all duration-300",
-          sidebarOpen
-            ? "w-[280px] opacity-100"
-            : "w-0 -translate-x-2 overflow-hidden opacity-0 pointer-events-none border-transparent",
+          "plan-sidebar border-border bg-mint/25 lg:sticky lg:top-[58px] lg:h-[calc(100vh-58px)] lg:overflow-y-auto",
+          !sidebarOpen ? "lg:pointer-events-none lg:-translate-x-2 lg:opacity-0" : "",
         ].join(" ")}
         aria-hidden={!sidebarOpen}
       >
@@ -239,42 +237,34 @@ function Reader({ name, planId }: { name: string; planId: string }) {
           <div className="mb-4 flex items-center justify-between">
             <Link
               to="/plans"
-              className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-ink-soft hover:text-terra"
+              className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.16em] text-ink-soft hover:text-purple"
             >
               <ChevronLeft size={12} /> Каталог
             </Link>
             <button
               onClick={() => setSidebarOpen(false)}
               aria-label="Свернуть боковую панель"
-              className="rounded-sm p-1 text-ink-soft transition-colors hover:bg-paper-dark hover:text-terra"
+              className="hidden rounded-full p-1.5 text-ink-soft transition-colors hover:bg-cream hover:text-purple lg:inline-flex"
             >
               <PanelLeftClose size={16} />
             </button>
           </div>
-          <div className={`mt-6 font-mono text-xs uppercase tracking-widest ${acc.text}`}>
-            {tpl.tag}
-          </div>
-          <div className="mt-2 font-editorial text-xl leading-tight">{tpl.title}</div>
+          <div className="mt-6 text-[10px] uppercase tracking-[0.18em] text-purple/75">{tpl.tag}</div>
+          <div className="mt-2 text-xl leading-tight">{tpl.title}</div>
 
           <div className="mt-5">
-            <div className="h-1 w-full bg-paper-dark">
+            <div className="h-1 w-full overflow-hidden rounded-full bg-cream">
               <div
-                className={`h-1 ${acc.bg} transition-all duration-500`}
+                className={`h-1 rounded-full ${acc.bg} transition-all duration-500`}
                 style={{ width: `${percent}%` }}
               />
             </div>
-            <div className="mt-2 font-mono text-xs text-ink-soft">
+            <div className="mt-2 text-[11px] text-ink-soft">
               {progress.completedChapters.length} / {chapters.length} пройдено
             </div>
           </div>
 
-          <nav className="relative mt-8 flex flex-col gap-1 pl-4">
-            <span aria-hidden className="absolute left-[10px] top-2 bottom-2 w-px bg-border" />
-            <span
-              aria-hidden
-              className={`absolute left-[10px] top-2 w-px ${acc.bg} transition-all duration-500`}
-              style={{ height: `calc(${percent}% - 4px)` }}
-            />
+          <nav className="relative mt-8 flex flex-col gap-1">
             {chapters.map((c, i) => {
               const done = progress.completedChapters.includes(i);
               const active = i === ch;
@@ -283,25 +273,23 @@ function Reader({ name, planId }: { name: string; planId: string }) {
                   key={i}
                   onClick={() => setCh(i)}
                   className={[
-                    "group flex items-start gap-3 rounded-sm px-3 py-3 text-left transition-colors",
-                    active
-                      ? "bg-paper-dark text-ink"
-                      : "text-ink-soft hover:bg-paper-dark/60 hover:text-ink",
+                    "group flex items-start gap-3 rounded-lg px-3 py-3 text-left transition-colors",
+                    active ? "bg-cream text-ink" : "text-ink-soft hover:bg-cream/60 hover:text-ink",
                   ].join(" ")}
                 >
                   <span
                     className={[
-                      "mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border font-mono text-xs",
+                      "mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[10px]",
                       done
-                        ? "border-sage bg-sage text-primary-foreground"
+                        ? "border-purple bg-purple text-on-dark"
                         : active
-                          ? `${acc.border} ${acc.bg} text-primary-foreground`
-                          : "border-border bg-card",
+                          ? "border-purple bg-purple text-on-dark"
+                          : "border-ink/15 bg-cream/70",
                     ].join(" ")}
                   >
                     {done ? <Check size={12} strokeWidth={3} /> : i + 1}
                   </span>
-                  <span className="font-serif text-sm leading-snug">
+                  <span className="text-[13px] leading-snug">
                     {c.title.replace(/^Глава [IVX]+\.\s*/, "")}
                   </span>
                 </button>
@@ -317,7 +305,7 @@ function Reader({ name, planId }: { name: string; planId: string }) {
           <button
             onClick={() => setSidebarOpen(true)}
             aria-label="Развернуть боковую панель"
-            className="sticky top-[85px] z-20 -ml-2 mb-4 inline-flex items-center gap-2 rounded-sm border border-border bg-card px-3 py-2 font-mono text-xs uppercase tracking-widest text-ink-soft shadow-[var(--shadow-1)] transition-colors hover:border-terra hover:text-terra"
+            className="sticky top-[72px] z-20 -ml-2 mb-4 inline-flex items-center gap-2 rounded-lg border border-ink/12 bg-cream px-3 py-2 text-[10px] uppercase tracking-[0.16em] text-ink-soft shadow-[var(--shadow-1)] transition-colors hover:border-purple/40 hover:text-purple"
           >
             <PanelLeftOpen size={14} /> Оглавление
           </button>
@@ -326,12 +314,12 @@ function Reader({ name, planId }: { name: string; planId: string }) {
           <div key={`hdr-${ch}`} className="animate-fade-in relative">
             <span
               aria-hidden
-              className="pointer-events-none absolute -top-8 -left-2 select-none font-editorial font-black leading-none text-ink"
-              style={{ fontSize: "clamp(9rem, 18vw, 15rem)", opacity: 0.05 }}
+              className="pointer-events-none absolute -top-8 -left-2 select-none text-[clamp(9rem,18vw,15rem)] font-light leading-none text-ink"
+              style={{ opacity: 0.05 }}
             >
               {ROMAN[ch] ?? ch + 1}
             </span>
-            <div className={`relative font-mono text-xs uppercase tracking-widest ${acc.text}`}>
+            <div className={`relative text-[10px] uppercase tracking-[0.16em] ${acc.text}`}>
               {isNoticeChapter ? (
                 <>Глава {ch + 1} · самопроверка</>
               ) : (
@@ -341,10 +329,10 @@ function Reader({ name, planId }: { name: string; planId: string }) {
                 </>
               )}
             </div>
-            <h1 className="text-balance relative mt-3 font-editorial text-4xl font-bold leading-[1.05] md:text-6xl">
+            <h1 className="text-balance relative mt-3 text-[36px] leading-[1.08] font-light md:text-[56px]">
               {chapter.title}
             </h1>
-            <p className="text-pretty relative mt-3 font-serif text-lg italic text-ink-soft">
+            <p className="text-pretty relative mt-3 text-[15px] leading-relaxed text-purple/75">
               {chapter.subtitle}
             </p>
           </div>
@@ -366,7 +354,7 @@ function Reader({ name, planId }: { name: string; planId: string }) {
                       <span className="h-px w-16 bg-border" />
                     </div>
                   )}
-                  <p className="text-pretty text-lg leading-relaxed">{p}</p>
+                  <p className="text-pretty text-[17px] leading-[1.8] text-ink/90">{p}</p>
                   {chapter.media
                     ?.filter((m) => m.afterBlock === i)
                     .map((m, mi) => (
@@ -377,28 +365,25 @@ function Reader({ name, planId }: { name: string; planId: string }) {
           </article>
 
           {isNoticeChapter && (
-            <section
-              className="mt-12 border border-border bg-paper-soft p-6 md:p-8"
-              style={{ borderRadius: "var(--radius-soft)" }}
-            >
-              <div className={`font-mono text-xs uppercase tracking-widest ${acc.text}`}>
+            <section className="mt-12 rounded-xl border border-ink/10 bg-cream p-6 md:p-8">
+              <div className={`text-[10px] uppercase tracking-[0.16em] ${acc.text}`}>
                 Самопроверка
               </div>
-              <h2 className="text-balance mt-2 font-editorial text-2xl leading-snug md:text-3xl">
+              <h2 className="text-balance mt-2 text-2xl leading-snug font-light md:text-[30px]">
                 Насколько сильно вы прокрастинируете?
               </h2>
-              <p className="mt-3 text-sm text-ink-soft">
+              <p className="mt-3 text-[13.5px] leading-relaxed text-ink-soft">
                 Ответьте на {PROC_QUESTIONS.length} утверждений. Слева — «совсем не про меня»,
                 справа — «это полностью я». В конце получите процент.
               </p>
 
-              <div className="mt-6 h-1 w-full bg-paper-dark">
+              <div className="mt-6 h-1 w-full overflow-hidden rounded-full bg-mint">
                 <div
-                  className={`h-1 ${acc.bg} transition-all duration-300`}
+                  className={`h-1 rounded-full ${acc.bg} transition-all duration-300`}
                   style={{ width: `${(answeredCount / PROC_QUESTIONS.length) * 100}%` }}
                 />
               </div>
-              <div className="mt-2 font-mono text-xs text-ink-soft">
+              <div className="mt-2 text-[11px] text-ink-soft">
                 {answeredCount} / {PROC_QUESTIONS.length} отвечено
               </div>
 
@@ -411,13 +396,13 @@ function Reader({ name, planId }: { name: string; planId: string }) {
                       className="border-t border-border/60 pt-6 first:border-t-0 first:pt-0"
                     >
                       <div className="flex items-start gap-3">
-                        <span className={`font-mono text-xs ${acc.text} mt-1`}>
+                        <span className={`mt-1 text-[11px] ${acc.text}`}>
                           {String(qi + 1).padStart(2, "0")}
                         </span>
-                        <p className="text-pretty font-serif text-lg leading-snug">{q}</p>
+                        <p className="text-pretty text-[16px] leading-snug">{q}</p>
                       </div>
                       <div className="mt-5 flex items-center justify-between gap-2 md:gap-4">
-                        <span className="hidden font-mono text-[10px] uppercase tracking-widest text-sage sm:block whitespace-nowrap">
+                        <span className="hidden text-[9px] uppercase tracking-[0.14em] text-ink-soft sm:block whitespace-nowrap">
                           не про меня
                         </span>
                         <div className="flex flex-1 items-center justify-center gap-2 md:gap-4">
@@ -461,13 +446,13 @@ function Reader({ name, planId }: { name: string; planId: string }) {
                             );
                           })}
                         </div>
-                        <span className="hidden font-mono text-[10px] uppercase tracking-widest text-terra sm:block whitespace-nowrap">
+                        <span className="hidden text-[9px] uppercase tracking-[0.14em] text-purple/70 sm:block whitespace-nowrap">
                           это я
                         </span>
                       </div>
-                      <div className="mt-2 flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-ink-soft sm:hidden">
-                        <span className="text-sage">не про меня</span>
-                        <span className="text-terra">это я</span>
+                      <div className="mt-2 flex items-center justify-between text-[9px] uppercase tracking-[0.14em] text-ink-soft sm:hidden">
+                        <span>не про меня</span>
+                        <span className="text-purple/70">это я</span>
                       </div>
                     </li>
                   );
@@ -476,48 +461,45 @@ function Reader({ name, planId }: { name: string; planId: string }) {
 
               {allAnswered && (
                 <div
-                  className="animate-fade-in mt-10 border p-6 md:p-8"
+                  className="animate-fade-in mt-10 rounded-xl border p-6 md:p-8"
                   style={{
-                    borderRadius: "var(--radius-soft)",
                     borderColor:
-                      verdict.tone === "terra" ? "var(--color-terra)" : "var(--color-sage)",
-                    background: "var(--card)",
+                      verdict.tone === "terra" ? "var(--purple)" : "var(--lav)",
+                    background: "var(--mint)",
                   }}
                 >
                   <div
-                    className={`font-mono text-xs uppercase tracking-widest ${verdict.tone === "terra" ? "text-terra" : "text-sage"}`}
+                    className={`text-[10px] uppercase tracking-[0.16em] ${verdict.tone === "terra" ? "text-purple" : "text-ink-soft"}`}
                   >
                     Ваш результат
                   </div>
                   <div className="mt-3 flex items-end gap-3">
                     <div
-                      className="font-editorial font-bold leading-none"
+                      className="font-light leading-none"
                       style={{
                         fontSize: "clamp(3.5rem, 10vw, 6rem)",
                         color:
-                          verdict.tone === "terra" ? "var(--color-terra)" : "var(--color-sage)",
+                          verdict.tone === "terra" ? "var(--purple)" : "var(--ink)",
                       }}
                     >
                       {procPercent}%
                     </div>
-                    <div className="mb-2 font-mono text-xs uppercase tracking-widest text-ink-soft">
+                    <div className="mb-2 text-[10px] uppercase tracking-[0.16em] text-ink-soft">
                       уровень прокрастинации
                     </div>
                   </div>
-                  <div className="mt-4 h-2 w-full rounded-full bg-paper-dark overflow-hidden">
+                  <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-cream/70">
                     <div
                       className="h-2 rounded-full transition-all duration-500"
                       style={{
                         width: `${procPercent}%`,
                         background:
-                          verdict.tone === "terra" ? "var(--color-terra)" : "var(--color-sage)",
+                          verdict.tone === "terra" ? "var(--purple)" : "var(--lav)",
                       }}
                     />
                   </div>
-                  <h3 className="mt-6 font-editorial text-2xl">{verdict.title}</h3>
-                  <p className="mt-2 font-serif text-base leading-relaxed text-ink-soft">
-                    {verdict.text}
-                  </p>
+                  <h3 className="mt-6 text-[22px] font-light">{verdict.title}</h3>
+                  <p className="mt-2 text-[13.5px] leading-relaxed text-ink/70">{verdict.text}</p>
                 </div>
               )}
             </section>
@@ -530,11 +512,11 @@ function Reader({ name, planId }: { name: string; planId: string }) {
                   key={i}
                   className={[
                     "h-1.5 rounded-full transition-all duration-300",
-                    i < revealed ? `w-6 ${acc.bg}` : "w-3 bg-paper-dark",
+                    i < revealed ? `w-6 ${acc.bg}` : "w-3 bg-lav/40",
                   ].join(" ")}
                 />
               ))}
-              <span className="ml-3 font-mono text-xs text-ink-soft">
+              <span className="ml-3 text-[11px] text-ink-soft">
                 {Math.min(revealed, totalBlocks)} / {totalBlocks}
               </span>
             </div>
@@ -547,7 +529,7 @@ function Reader({ name, planId }: { name: string; planId: string }) {
                   <button
                     onClick={goNextChapter}
                     disabled={!allAnswered}
-                    className={`group inline-flex items-center gap-3 ${acc.bg} px-7 py-3.5 font-editorial text-base text-primary-foreground shadow-[var(--shadow-2)] transition-all duration-300 ease-[var(--ease-out-soft)] hover:-translate-y-[1px] hover:shadow-[var(--shadow-warm)] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0`}
+                    className="btn-primary group disabled:opacity-40"
                     style={{ borderRadius: "var(--radius-soft)" }}
                   >
                     {isDone ? "Следующая глава" : "Отметить и продолжить"}
@@ -563,7 +545,7 @@ function Reader({ name, planId }: { name: string; planId: string }) {
                     <button
                       onClick={mark}
                       disabled={!allAnswered}
-                      className={`inline-flex items-center gap-3 ${acc.bg} px-7 py-3.5 font-editorial text-base text-primary-foreground shadow-[var(--shadow-2)] transition-all disabled:opacity-40`}
+                      className="btn-primary disabled:opacity-40"
                       style={{ borderRadius: "var(--radius-soft)" }}
                     >
                       Отметить главу прочитанной
@@ -571,12 +553,12 @@ function Reader({ name, planId }: { name: string; planId: string }) {
                   )
                 )}
                 {!allAnswered && (
-                  <span className="font-mono text-xs uppercase tracking-widest text-ink-soft">
+                  <span className="text-[10px] uppercase tracking-[0.14em] text-ink-soft">
                     Ответьте на все вопросы, чтобы продолжить
                   </span>
                 )}
                 {isDone && (
-                  <span className="inline-flex items-center gap-2 font-mono text-xs text-sage">
+                  <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.14em] text-purple">
                     <Check size={14} strokeWidth={3} /> Глава пройдена
                   </span>
                 )}
@@ -584,7 +566,7 @@ function Reader({ name, planId }: { name: string; planId: string }) {
             ) : !allBlocksRevealed ? (
               <button
                 onClick={nextBlock}
-                className={`group inline-flex items-center gap-3 ${acc.bg} px-7 py-3.5 font-editorial text-base text-primary-foreground shadow-[var(--shadow-2)] transition-all duration-300 ease-[var(--ease-out-soft)] hover:-translate-y-[1px] hover:shadow-[var(--shadow-warm)] active:translate-y-0`}
+                className="btn-primary group"
                 style={{ borderRadius: "var(--radius-soft)" }}
               >
                 Далее
@@ -602,20 +584,15 @@ function Reader({ name, planId }: { name: string; planId: string }) {
                     <span aria-hidden className={`mx-auto mb-5 block h-px w-24 ${acc.bg}`} />
                     <span
                       aria-hidden
-                      className={`pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/3 select-none font-editorial italic leading-none ${acc.text}`}
-                      style={{ fontSize: "6rem", opacity: 0.18 }}
+                      className={`pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/3 select-none text-[6rem] font-light leading-none ${acc.text}`}
+                      style={{ opacity: 0.18 }}
                     >
                       “
                     </span>
-                    <p className="text-balance mx-auto max-w-xl font-editorial text-2xl italic leading-snug md:text-3xl">
+                    <p className="text-balance mx-auto max-w-xl text-[24px] leading-snug font-light md:text-[30px]">
                       {chapter.quote.text}
                     </p>
-                    <div
-                      className={`mt-4 font-hand text-xl ${acc.text}`}
-                      style={{ fontFamily: "var(--font-hand)" }}
-                    >
-                      — {chapter.quote.author}
-                    </div>
+                    <div className={`mt-4 text-[13px] ${acc.text}`}>— {chapter.quote.author}</div>
                     <span aria-hidden className={`mx-auto mt-6 block h-px w-24 ${acc.bg}`} />
                   </aside>
                 )}
@@ -624,7 +601,7 @@ function Reader({ name, planId }: { name: string; planId: string }) {
                   {chapter.action && (
                     <Link
                       to="/focus"
-                      className="inline-flex items-center rounded-md border border-border bg-card px-5 py-3 font-serif text-sm hover:border-terra"
+                      className="btn-outline"
                     >
                       Запустить таймер
                     </Link>
@@ -632,7 +609,7 @@ function Reader({ name, planId }: { name: string; planId: string }) {
                   {ch < chapters.length - 1 ? (
                     <button
                       onClick={goNextChapter}
-                      className={`group inline-flex items-center gap-3 ${acc.bg} px-7 py-3.5 font-editorial text-base text-primary-foreground shadow-[var(--shadow-2)] transition-all duration-300 ease-[var(--ease-out-soft)] hover:-translate-y-[1px] hover:shadow-[var(--shadow-warm)]`}
+                      className="btn-primary group"
                       style={{ borderRadius: "var(--radius-soft)" }}
                     >
                       {isDone ? "Следующая глава" : "Отметить и продолжить"}
@@ -647,7 +624,7 @@ function Reader({ name, planId }: { name: string; planId: string }) {
                     !isDone && (
                       <button
                         onClick={mark}
-                        className={`group inline-flex items-center gap-3 ${acc.bg} px-7 py-3.5 font-editorial text-base text-primary-foreground shadow-[var(--shadow-2)] transition-all duration-300 ease-[var(--ease-out-soft)] hover:-translate-y-[1px] hover:shadow-[var(--shadow-warm)]`}
+                        className="btn-primary group"
                         style={{ borderRadius: "var(--radius-soft)" }}
                       >
                         Отметить главу прочитанной
@@ -655,7 +632,7 @@ function Reader({ name, planId }: { name: string; planId: string }) {
                     )
                   )}
                   {isDone && (
-                    <span className="inline-flex items-center gap-2 font-mono text-xs text-sage">
+                    <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.14em] text-purple">
                       <Check size={14} strokeWidth={3} /> Глава пройдена
                     </span>
                   )}
@@ -665,33 +642,25 @@ function Reader({ name, planId }: { name: string; planId: string }) {
           </div>
 
           {allDone && (
-            <section
-              className="animate-fade-in mt-20 bg-card p-8 md:p-10"
-              style={{
-                transform: "rotate(-0.4deg)",
-                boxShadow: "var(--shadow-3)",
-                border: "1px solid var(--border)",
-              }}
-            >
-              <div className="font-mono text-xs uppercase tracking-widest text-sage">
+            <section className="animate-fade-in mt-20 rounded-2xl border border-ink/10 bg-cream p-8 shadow-[var(--shadow-2)] md:p-10">
+              <div className="text-[10px] uppercase tracking-[0.18em] text-purple/75">
                 Финал плана
               </div>
-              <h2 className="mt-2 font-editorial text-3xl font-bold md:text-4xl">
+              <h2 className="mt-2 text-[30px] leading-tight font-light md:text-[36px]">
                 {name}, письмо себе
               </h2>
               <div
-                className="mt-6 bg-paper-soft p-5"
+                className="mt-6 rounded-xl bg-paper-soft p-5"
                 style={{
                   backgroundImage:
-                    "repeating-linear-gradient(to bottom, transparent 0, transparent 31px, color-mix(in oklab, var(--terra) 25%, transparent) 31px, color-mix(in oklab, var(--terra) 25%, transparent) 32px)",
+                    "repeating-linear-gradient(to bottom, transparent 0, transparent 31px, color-mix(in oklab, var(--lav) 35%, transparent) 31px, color-mix(in oklab, var(--lav) 35%, transparent) 32px)",
                 }}
               >
                 <textarea
                   value={letter}
                   onChange={(e) => setLetter(e.target.value)}
                   rows={6}
-                  className="w-full resize-none border-none bg-transparent font-hand text-2xl leading-[32px] outline-none placeholder:text-ink-muted-2"
-                  style={{ fontFamily: "var(--font-hand)" }}
+                  className="w-full resize-none border-none bg-transparent text-[22px] leading-[32px] outline-none placeholder:text-ink-muted-2"
                   placeholder="Дорогой я, помни, что…"
                 />
               </div>
@@ -742,7 +711,7 @@ function ChapterMediaBlock({ media }: { media: ChapterMedia }) {
         )}
       </div>
       {media.caption && (
-        <figcaption className="mt-3 text-center font-serif text-sm italic text-ink-soft">
+        <figcaption className="mt-3 text-center text-[12px] text-ink-soft">
           {media.caption}
         </figcaption>
       )}

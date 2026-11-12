@@ -111,22 +111,19 @@ function Dashboard({ name }: { name: string }) {
   return (
     <>
       {/* HERO */}
-      <div className="flex items-baseline gap-3 font-mono text-xs uppercase tracking-[0.2em] text-terra">
-        <span className="inline-block h-px w-8 bg-terra" />
+      <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-purple/80">
+        <span className="inline-block h-px w-8 bg-purple/60" />
         Мои дела · {formatToday(now)}
       </div>
-      <h1 className="text-balance mt-4 font-editorial text-5xl leading-[1.02] md:text-6xl">
-        {greetingFor(now)}, <span className="italic text-terra">{name}.</span>
+      <h1 className="text-balance mt-4 text-[42px] leading-[1.04] font-light tracking-[-0.015em] md:text-[56px]">
+        {greetingFor(now)}, <span className="text-purple">{name}.</span>
       </h1>
-      <p className="mt-4 max-w-2xl text-ink-soft">
+      <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-ink-soft">
         Тихая сводка: где вы сейчас, что стоит закрыть сегодня и что говорят цифры за неделю.
       </p>
 
       {/* QUICK GUIDE */}
-      <div
-        className="mt-8 grid gap-3 border border-border bg-paper-soft p-4 md:grid-cols-3"
-        style={{ borderRadius: "var(--radius-soft)" }}
-      >
+      <div className="mt-8 grid gap-3 rounded-2xl border border-ink/10 bg-cream p-5 md:grid-cols-3">
         <GuideItem
           step="1"
           title="Начните с фокуса"
@@ -148,11 +145,11 @@ function Dashboard({ name }: { name: string }) {
       <div className="mt-10 grid gap-6 md:grid-cols-[1.1fr_2fr]">
         <Link
           to="/focus"
-          className="ink-glow group relative flex flex-col justify-between overflow-hidden border border-ink bg-ink p-6 text-primary-foreground transition-transform duration-300 ease-[var(--ease-out-soft)] hover:-translate-y-[2px]"
-          style={{ borderRadius: "var(--radius-soft)", boxShadow: "var(--shadow-2)" }}
+          className="ink-glow group relative flex flex-col justify-between overflow-hidden rounded-xl bg-purple p-6 text-on-dark transition-transform duration-300 ease-[var(--ease-out-soft)] hover:-translate-y-[2px]"
+          style={{ boxShadow: "var(--shadow-2)" }}
         >
-          <div className="font-mono text-xs uppercase tracking-[0.2em] opacity-80">Один шаг</div>
-          <div className="mt-6 font-editorial text-3xl leading-tight">
+          <div className="text-[10px] uppercase tracking-[0.2em] text-on-dark/70">Один шаг</div>
+          <div className="mt-6 text-[28px] leading-tight font-light">
             Начать фокус-сессию
             <span
               aria-hidden
@@ -161,7 +158,7 @@ function Dashboard({ name }: { name: string }) {
               →
             </span>
           </div>
-          <div className="mt-6 font-mono text-xs uppercase tracking-widest opacity-80">
+          <div className="mt-6 text-[9px] uppercase tracking-[0.16em] text-on-dark/65">
             2 минуты · без давления
           </div>
         </Link>
@@ -198,17 +195,16 @@ function Dashboard({ name }: { name: string }) {
               const t = getPlanTemplate(a.planId ?? "full");
               const a2 = accentClasses(t?.accent ?? "terra");
               return (
-                <Link
+              <Link
                   key={i}
                   to="/plans/$planId"
                   params={{ planId: a.planId ?? "full" }}
-                  className="warm-glow group border border-border bg-paper-soft px-4 py-3 transition-all duration-200 hover:-translate-y-[1px] hover:border-terra"
-                  style={{ borderRadius: "var(--radius-soft)" }}
+                  className="warm-glow group rounded-xl border border-ink/10 bg-cream px-4 py-3 transition-all duration-200 hover:-translate-y-[1px] hover:border-purple/40"
                 >
-                  <div className={`font-mono text-xs uppercase tracking-widest ${a2.text}`}>
+                  <div className={`text-[9px] uppercase tracking-[0.14em] ${a2.text}`}>
                     {a.finishedAt ? new Date(a.finishedAt).toLocaleDateString("ru-RU") : "—"}
                   </div>
-                  <div className="mt-1 font-editorial text-base">
+                  <div className="mt-1 text-[15px]">
                     {t?.title ?? "План"}
                     <span
                       aria-hidden
@@ -217,7 +213,7 @@ function Dashboard({ name }: { name: string }) {
                       →
                     </span>
                   </div>
-                  <div className="mt-1 font-mono text-[11px] uppercase tracking-widest text-ink-soft">
+                  <div className="mt-1 text-[9px] uppercase tracking-[0.14em] text-ink-soft">
                     открыть снова
                   </div>
                 </Link>
@@ -233,12 +229,12 @@ function Dashboard({ name }: { name: string }) {
 function GuideItem({ step, title, text }: { step: string; title: string; text: string }) {
   return (
     <div className="flex items-start gap-3">
-      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-terra font-mono text-xs text-terra">
+      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-purple/30 text-[11px] text-purple">
         {step}
       </span>
       <div className="min-w-0">
-        <div className="font-editorial text-base leading-tight">{title}</div>
-        <div className="mt-0.5 text-sm text-ink-soft">{text}</div>
+        <div className="text-[14px] leading-tight">{title}</div>
+        <div className="mt-1 text-[12px] leading-relaxed text-ink-soft">{text}</div>
       </div>
     </div>
   );
@@ -256,16 +252,13 @@ function Stat({
   suffix?: string;
   tone?: "terra" | "sage" | "ink";
 }) {
-  const toneClass = tone === "terra" ? "text-terra" : tone === "sage" ? "text-sage" : "text-ink";
+  const toneClass = tone === "terra" ? "text-purple" : tone === "sage" ? "text-lav" : "text-ink";
   return (
-    <div
-      className="border border-border bg-card p-4"
-      style={{ borderRadius: "var(--radius-soft)" }}
-    >
-      <div className="font-mono text-xs uppercase tracking-widest text-ink-soft">{label}</div>
-      <div className={`mt-2 font-editorial text-4xl leading-none ${toneClass}`}>{value}</div>
+    <div className="rounded-xl border border-ink/10 bg-cream p-4">
+      <div className="text-[9px] uppercase tracking-[0.14em] text-ink-soft">{label}</div>
+      <div className={`mt-2 text-[34px] leading-none font-light ${toneClass}`}>{value}</div>
       {suffix && (
-        <div className="mt-1 font-mono text-xs uppercase tracking-widest text-ink-soft">
+        <div className="mt-1.5 text-[9px] uppercase tracking-[0.14em] text-ink-soft">
           {suffix}
         </div>
       )}
@@ -276,11 +269,11 @@ function Stat({
 function SectionHead({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <>
-      <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-ink-soft">
-        <span className="inline-block h-px w-8 bg-border" />
+      <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-ink-soft">
+        <span className="inline-block h-px w-8 bg-ink/20" />
         {eyebrow}
       </div>
-      <h2 className="mt-3 font-editorial text-3xl leading-tight md:text-4xl">{title}</h2>
+      <h2 className="mt-3 text-[28px] leading-tight font-light md:text-[34px]">{title}</h2>
     </>
   );
 }
@@ -288,18 +281,13 @@ function SectionHead({ eyebrow, title }: { eyebrow: string; title: string }) {
 function ActivePlanCard({ entry }: { entry: [string, PlanProgress] | null }) {
   if (!entry) {
     return (
-      <div
-        className="border border-border bg-card p-6"
-        style={{ borderRadius: "var(--radius-soft)" }}
-      >
-        <div className="font-mono text-xs uppercase tracking-[0.2em] text-ink-soft">
-          Активный план
-        </div>
-        <div className="mt-3 font-editorial text-2xl leading-tight">Ещё не выбран</div>
-        <p className="mt-2 text-sm text-ink-soft">
+      <div className="rounded-2xl border border-ink/10 bg-cream p-6">
+        <div className="text-[10px] uppercase tracking-[0.2em] text-ink-soft">Активный план</div>
+        <div className="mt-3 text-[22px] leading-tight font-light">Ещё не выбран</div>
+        <p className="mt-2 text-[13px] leading-relaxed text-ink-soft">
           Соберите себе маршрут: полный, короткий, про страх или про ритуал.
         </p>
-        <Link to="/plans" className="btn-link mt-4 inline-block text-sm">
+        <Link to="/plans" className="btn-link mt-4 inline-block text-[13px]">
           Открыть каталог →
         </Link>
       </div>
@@ -312,22 +300,19 @@ function ActivePlanCard({ entry }: { entry: [string, PlanProgress] | null }) {
   const percent = Math.round((done / total) * 100);
   const a = accentClasses(t.accent);
   return (
-    <div
-      className="border border-border bg-card p-6"
-      style={{ borderRadius: "var(--radius-soft)" }}
-    >
-      <div className={`font-mono text-xs uppercase tracking-[0.2em] ${a.text}`}>
+    <div className="rounded-2xl border border-ink/10 bg-cream p-6">
+      <div className={`text-[10px] uppercase tracking-[0.2em] ${a.text}`}>
         Активный план · {t.tag}
       </div>
-      <div className="mt-3 font-editorial text-2xl leading-tight">{t.title}</div>
-      <p className="mt-2 text-sm text-ink-soft">{t.subtitle}</p>
-      <div className="mt-5 h-[6px] w-full overflow-hidden bg-paper-dark">
+      <div className="mt-3 text-[22px] leading-tight font-light">{t.title}</div>
+      <p className="mt-2 text-[13px] leading-relaxed text-ink-soft">{t.subtitle}</p>
+      <div className="mt-5 h-1.5 w-full overflow-hidden rounded-full bg-mint/70">
         <div
-          className={`h-full ${a.bg} transition-all duration-500`}
+          className={`h-full rounded-full ${a.bg} transition-all duration-500`}
           style={{ width: `${percent}%` }}
         />
       </div>
-      <div className="mt-3 flex items-baseline justify-between font-mono text-xs uppercase tracking-widest text-ink-soft">
+      <div className="mt-3 flex items-baseline justify-between text-[9px] uppercase tracking-[0.14em] text-ink-soft">
         <span>
           {done} из {total} глав
         </span>
@@ -336,7 +321,7 @@ function ActivePlanCard({ entry }: { entry: [string, PlanProgress] | null }) {
       <Link
         to="/plans/$planId"
         params={{ planId: id }}
-        className="btn-link mt-5 inline-block text-sm"
+        className="btn-link mt-5 inline-block text-[13px]"
       >
         Продолжить →
       </Link>
@@ -346,43 +331,42 @@ function ActivePlanCard({ entry }: { entry: [string, PlanProgress] | null }) {
 
 function TypeCard({ quiz }: { quiz: QuizResult | null }) {
   return (
-    <div
-      className="border border-border bg-card p-6"
-      style={{ borderRadius: "var(--radius-soft)" }}
-    >
-      <div className="font-mono text-xs uppercase tracking-[0.2em] text-ink-soft">Ваш тип</div>
+    <div className="rounded-2xl border border-ink/10 bg-cream p-6">
+      <div className="text-[10px] uppercase tracking-[0.2em] text-ink-soft">Ваш тип</div>
       {quiz ? (
         <>
-          <div className="mt-3 font-editorial text-2xl leading-tight text-terra">
+          <div className="mt-3 text-[22px] leading-tight font-light text-purple">
             {typeInfo[quiz.type].name}
           </div>
-          <p className="mt-2 text-sm text-ink-soft">{typeInfo[quiz.type].trigger}</p>
+          <p className="mt-2 text-[13px] leading-relaxed text-ink-soft">
+            {typeInfo[quiz.type].trigger}
+          </p>
           <div className="mt-5 flex items-baseline gap-4">
             <div>
-              <div className="font-mono text-xs uppercase tracking-widest text-ink-soft">
+              <div className="text-[9px] uppercase tracking-[0.14em] text-ink-soft">
                 Влияние
               </div>
-              <div className="mt-1 font-editorial text-3xl">
+              <div className="mt-1 text-[28px] leading-none font-light">
                 {quiz.impact}
-                <span className="text-lg text-ink-soft">/7</span>
+                <span className="text-[16px] text-ink-soft">/7</span>
               </div>
             </div>
             <div className="flex-1">
-              <div className="font-mono text-xs uppercase tracking-widest text-ink-soft">
+              <div className="text-[9px] uppercase tracking-[0.14em] text-ink-soft">
                 Пройден
               </div>
-              <div className="mt-1 font-mono text-sm">
+              <div className="mt-1.5 text-[13px]">
                 {new Date(quiz.takenAt).toLocaleDateString("ru-RU")}
               </div>
             </div>
           </div>
           <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
-            <Link to="/result" className="btn-link text-sm">
+            <Link to="/result" className="btn-link text-[13px]">
               Смотреть результат →
             </Link>
             <Link
               to="/quiz"
-              className="font-mono text-xs uppercase tracking-widest text-ink-soft transition-colors hover:text-terra"
+              className="text-[9px] uppercase tracking-[0.14em] text-ink-soft transition-colors hover:text-purple"
             >
               ↻ Пройти опрос заново
             </Link>
@@ -390,11 +374,11 @@ function TypeCard({ quiz }: { quiz: QuizResult | null }) {
         </>
       ) : (
         <>
-          <div className="mt-3 font-editorial text-2xl leading-tight text-ink-soft">—</div>
-          <p className="mt-2 text-sm text-ink-soft">
+          <div className="mt-3 text-[22px] leading-tight font-light text-ink-soft">—</div>
+          <p className="mt-2 text-[13px] leading-relaxed text-ink-soft">
             Восемь вопросов, чтобы понять, что именно вас тормозит.
           </p>
-          <Link to="/quiz" className="btn-link mt-4 inline-block text-sm">
+          <Link to="/quiz" className="btn-link mt-4 inline-block text-[13px]">
             Пройти опрос →
           </Link>
         </>
@@ -432,21 +416,18 @@ function HeatmapCard({ sessions, checkins }: { sessions: Session[]; checkins: Ch
   }
 
   const intensity = (n: number) => {
-    if (n === 0) return "bg-paper-dark";
-    if (n === 1) return "bg-sage/40";
-    if (n === 2) return "bg-sage/70";
-    return "bg-sage";
+    if (n === 0) return "bg-mint/40";
+    if (n === 1) return "bg-lav/35";
+    if (n === 2) return "bg-lav/65";
+    return "bg-lav";
   };
 
   return (
-    <div
-      className="border border-border bg-card p-6"
-      style={{ borderRadius: "var(--radius-soft)" }}
-    >
-      <div className="font-mono text-xs uppercase tracking-[0.2em] text-ink-soft">
+    <div className="rounded-2xl border border-ink/10 bg-cream p-6">
+      <div className="text-[10px] uppercase tracking-[0.2em] text-ink-soft">
         Календарь · 5 недель
       </div>
-      <div className="mt-4 grid grid-cols-7 gap-1.5 font-mono text-[11px] text-ink-soft">
+      <div className="mt-4 grid grid-cols-7 gap-1.5 text-[10px] text-ink-soft">
         {["пн", "вт", "ср", "чт", "пт", "сб", "вс"].map((d) => (
           <div key={d} className="text-center uppercase tracking-[0.15em]">
             {d}
@@ -458,27 +439,23 @@ function HeatmapCard({ sessions, checkins }: { sessions: Session[]; checkins: Ch
           <div
             key={c.key}
             title={`${c.label} · ${c.sessions} сес.${c.checkin ? " · чек-ин" : ""}`}
-            className={`relative aspect-square flex items-center justify-center font-mono text-2xl font-bold leading-none ${
-              c.sessions > 1 ? "text-paper" : "text-ink-soft"
+            className={`relative aspect-square flex items-center justify-center rounded-lg text-[18px] leading-none font-light ${
+              c.sessions > 1 ? "text-on-dark" : "text-ink-soft"
             } ${intensity(c.sessions)} transition-colors ${
-              c.checkin ? "ring-2 ring-terra ring-offset-1 ring-offset-card" : ""
+              c.checkin ? "ring-2 ring-purple ring-offset-1 ring-offset-cream" : ""
             }`}
-            style={{ borderRadius: "4px" }}
           >
             {c.day}
           </div>
         ))}
       </div>
-      <div className="mt-4 flex items-center gap-4 font-mono text-xs uppercase tracking-widest text-ink-soft">
+      <div className="mt-4 flex items-center gap-4 text-[9px] uppercase tracking-[0.14em] text-ink-soft">
         <span className="flex items-center gap-1.5">
-          <span className="inline-block h-2 w-2 bg-sage" style={{ borderRadius: "2px" }} />
+          <span className="inline-block h-2.5 w-2.5 rounded bg-lav" />
           сессия
         </span>
         <span className="flex items-center gap-1.5">
-          <span
-            className="inline-block h-2.5 w-2.5 ring-2 ring-terra ring-offset-1 ring-offset-card"
-            style={{ borderRadius: "2px" }}
-          />
+          <span className="inline-block h-2.5 w-2.5 rounded ring-2 ring-purple ring-offset-1 ring-offset-cream" />
           чек-ин
         </span>
       </div>
@@ -509,62 +486,51 @@ function CheckinCard({ existing, onSaved }: { existing?: Checkin; onSaved: () =>
   }
 
   return (
-    <div
-      className="border border-border bg-card p-6"
-      style={{ borderRadius: "var(--radius-soft)" }}
-    >
-      <div className="font-mono text-xs uppercase tracking-[0.2em] text-terra">
+    <div className="rounded-2xl border border-ink/10 bg-cream p-6">
+      <div className="text-[10px] uppercase tracking-[0.2em] text-purple/80">
         Чек-ин · сегодня
       </div>
-      <div className="mt-3 font-editorial text-2xl leading-tight">
+      <div className="mt-3 text-[22px] leading-tight font-light">
         {existing ? "Обновить запись" : "Как прошёл день?"}
       </div>
       <form onSubmit={save} className="mt-5 space-y-4">
         <label className="block">
-          <span className="font-mono text-xs uppercase tracking-widest text-ink-soft">
+          <span className="text-[9px] uppercase tracking-[0.14em] text-ink-soft">
             Что сделал(а)
           </span>
           <input
             value={done}
             onChange={(e) => setDone(e.target.value)}
             placeholder="Одно предложение"
-            className="mt-1 w-full border-b border-ink/25 bg-transparent py-1.5 font-editorial text-lg outline-none focus:border-terra"
+            className="auth-input mt-1 w-full py-1.5 text-lg"
           />
         </label>
         <label className="block">
-          <span className="font-mono text-xs uppercase tracking-widest text-ink-soft">
+          <span className="text-[9px] uppercase tracking-[0.14em] text-ink-soft">
             Что отложил(а)
           </span>
           <input
             value={postponed}
             onChange={(e) => setPostponed(e.target.value)}
             placeholder="Без осуждения"
-            className="mt-1 w-full border-b border-ink/25 bg-transparent py-1.5 font-editorial text-lg outline-none focus:border-terra"
+            className="auth-input mt-1 w-full py-1.5 text-lg"
           />
         </label>
         <label className="block">
-          <span className="font-mono text-xs uppercase tracking-widest text-ink-soft">
+          <span className="text-[9px] uppercase tracking-[0.14em] text-ink-soft">
             Что отвлекало (через запятую)
           </span>
           <input
             value={distractions}
             onChange={(e) => setDistractions(e.target.value)}
             placeholder="телефон, тревога, чат"
-            className="mt-1 w-full border-b border-ink/25 bg-transparent py-1.5 font-editorial text-lg outline-none focus:border-terra"
+            className="auth-input mt-1 w-full py-1.5 text-lg"
           />
         </label>
         <div className="flex items-baseline gap-4">
-          <button
-            className="ink-glow inline-flex items-center gap-2 bg-ink px-5 py-2 font-editorial text-base text-primary-foreground transition-transform duration-200 hover:-translate-y-[1px]"
-            style={{ borderRadius: "var(--radius-soft)", boxShadow: "var(--shadow-2)" }}
-          >
-            Сохранить
-          </button>
+          <button className="btn-primary">Сохранить</button>
           {savedFlash && (
-            <span
-              className="font-hand text-2xl text-sage"
-              style={{ fontFamily: "var(--font-hand)" }}
-            >
+            <span className="text-[10px] uppercase tracking-[0.14em] text-purple">
               — записано
             </span>
           )}
