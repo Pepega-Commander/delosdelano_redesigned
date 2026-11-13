@@ -73,6 +73,7 @@ class AuthHttpTest {
         user.setName("Test user");
         user.setPasswordHash(encoder.encode(PASSWORD));
         account = user;
+        when(users.findByEmail(EMAIL)).thenReturn(Optional.of(user));
         when(users.findById(USER_ID)).thenReturn(Optional.of(user));
     }
 
@@ -258,6 +259,180 @@ class AuthHttpTest {
         verify(users, never()).save(any());
     }
 
+    @Test
+    void passwordChangeReturnsEmpty204AndUpdatesHashAndLoginWhileKeepingJwtValid() throws Exception {
+        account.setAvatar("https://example.com/avatar.png");
+        User before = copy(account);
+        String next = "New-" + UUID.randomUUID();
+        String token = jwt.generateToken(USER_ID);
+        assertNoContent(changePassword(PASSWORD, next, token));
+        assertTrue(!before.getPasswordHash().equals(account.getPasswordHash()), "Password hash must change");
+        assertTrue(!next.equals(account.getPasswordHash()), "Only a hash may be saved");
+        assertTrue(encoder.matches(next, account.getPasswordHash()), "New password must verify");
+        assertTrue(!encoder.matches(PASSWORD, account.getPasswordHash()), "Old password must no longer verify");
+        assertProfileFieldsPreserved(account, before);
+        verify(users).save(account);
+        assertError(post("/api/auth/login", Map.of("email", EMAIL, "password", PASSWORD)), 401, "Неверная почта или пароль");
+        assertSuccess(post("/api/auth/login", Map.of("email", EMAIL, "password", next)), USER_ID);
+        assertProfile(send("GET", "/api/me", null, token), USER_ID, before.getName(), EMAIL, before.getAvatar());
+    }
+
+    @Test
+    void passwordChangePreservesWhitespaceCaseAndUnicodeRepresentation() throws Exception {
+        String next = "  Cafe\u0301-" + UUID.randomUUID() + "  ";
+        assertNoContent(changePassword(PASSWORD, next, jwt.generateToken(USER_ID)));
+        assertTrue(encoder.matches(next, account.getPasswordHash()), "Exact unmodified password must verify");
+        assertTrue(!encoder.matches(next.strip(), account.getPasswordHash()), "Whitespace must not be stripped");
+        assertTrue(!encoder.matches(next.toLowerCase(java.util.Locale.ROOT), account.getPasswordHash()), "Case must not be folded");
+        assertTrue(!encoder.matches(java.text.Normalizer.normalize(next, java.text.Normalizer.Form.NFC), account.getPasswordHash()),
+                "Unicode must not be normalized");
+    }
+
+    @Test
+    void legacyCurrentPasswordsDoNotUseNewPasswordPolicy() throws Exception {
+        String token = jwt.generateToken(USER_ID);
+        for (String current : List.of("x", " ", "x".repeat(80))) {
+            // Older BCrypt versions allowed >72-byte inputs and used their first 72 bytes.
+            account.setPasswordHash(encoder.encode(current.length() > 72 ? current.substring(0, 72) : current));
+            String next = "New-" + UUID.randomUUID();
+            assertNoContent(changePassword(current, next, token));
+            assertTrue(encoder.matches(next, account.getPasswordHash()), "Valid legacy credential must allow changing password");
+        }
+    }
+
+    @Test
+    void incorrectCurrentPasswordReturns400WithoutChanges() throws Exception {
+        User before = copy(account);
+        for (String current : List.of("wrong", "wrong-".repeat(20))) {
+            assertError(changePassword(current, "New-" + UUID.randomUUID(), jwt.generateToken(USER_ID)), 400, "Некорректные данные запроса");
+            assertUnrelatedFields(account, before);
+            assertProfileFieldsPreserved(account, before);
+        }
+        verify(users, never()).save(any());
+    }
+
+    @Test
+    void reusingStoredPasswordIsRejectedWithoutRehashing() throws Exception {
+        User before = copy(account);
+        assertError(changePassword(PASSWORD, PASSWORD, jwt.generateToken(USER_ID)), 400, "Некорректные данные запроса");
+        assertUnrelatedFields(account, before);
+        verify(users, never()).save(any());
+    }
+
+    @Test
+    void invalidNewPasswordPolicyRejectsBeforeLookupOrMutation() throws Exception {
+        User before = copy(account);
+        for (String next : List.of("", "        ", "short12", "a".repeat(73), "я".repeat(37), "€".repeat(25), "😀".repeat(19), "😀".repeat(7))) {
+            assertError(changePassword(PASSWORD, next, jwt.generateToken(USER_ID)), 400, "Некорректные данные запроса");
+            assertUnrelatedFields(account, before);
+            assertProfileFieldsPreserved(account, before);
+        }
+        verify(users, never()).findById(any());
+        verify(users, never()).save(any());
+    }
+
+    @Test
+    void newPasswordsAtUtf8ByteAndCharacterBoundariesAreAcceptedExactly() throws Exception {
+        String token = jwt.generateToken(USER_ID);
+        for (String next : List.of("a".repeat(8), "a".repeat(72), "я".repeat(36), "€".repeat(24), "😀".repeat(18))) {
+            account.setPasswordHash(encoder.encode(PASSWORD));
+            assertNoContent(changePassword(PASSWORD, next, token));
+            assertTrue(encoder.matches(next, account.getPasswordHash()), "Boundary password must verify without truncation");
+        }
+    }
+
+    @Test
+    void malformedAndUnknownPasswordFieldsReturnSafe400WithoutChanges() throws Exception {
+        User before = copy(account);
+        String currentJson = json.writeValueAsString(PASSWORD);
+        String nextJson = json.writeValueAsString("New-" + UUID.randomUUID());
+        List<String> invalid = new ArrayList<>(List.of("", "null", "[]", "true", "12", "\"text\"", "{broken", "{}",
+                "{\"currentPassword\":" + currentJson + "}", "{\"newPassword\":" + nextJson + "}",
+                "{\"currentPassword\":\"\",\"newPassword\":" + nextJson + "}"));
+        for (String value : List.of("null", "12", "true", "{}", "[]")) {
+            invalid.add("{\"currentPassword\":" + value + ",\"newPassword\":" + nextJson + "}");
+            invalid.add("{\"currentPassword\":" + currentJson + ",\"newPassword\":" + value + "}");
+        }
+        String valid = "{\"currentPassword\":" + currentJson + ",\"newPassword\":" + nextJson + "}";
+        invalid.add(valid + " {}");
+        invalid.add(valid + " trailing");
+        for (String field : List.of("id", "userId", "email", "name", "avatar", "password", "passwordHash")) {
+            invalid.add(valid.substring(0, valid.length() - 1) + ",\"" + field + "\":null}");
+        }
+        for (String body : invalid) {
+            assertError(send("PATCH", "/api/me/password", body, jwt.generateToken(USER_ID)), 400, "Некорректные данные запроса");
+            assertUnrelatedFields(account, before);
+            assertProfileFieldsPreserved(account, before);
+        }
+        verify(users, never()).findById(any());
+        verify(users, never()).save(any());
+    }
+
+    @Test
+    void passwordChangeRejectsMissingMalformedExpiredAndForgedTokens() throws Exception {
+        assertError(changePassword(PASSWORD, "New-" + UUID.randomUUID(), null), 401, "Неверная почта или пароль");
+        for (String token : List.of("", "invalid", "not.a.jwt", expiredToken(USER_ID),
+                new JwtService(UUID.randomUUID().toString().repeat(2), 7).generateToken(USER_ID))) {
+            assertError(changePassword(PASSWORD, "New-" + UUID.randomUUID(), token), 401, "Неверная почта или пароль");
+        }
+        verify(users, never()).findById(any());
+        verify(users, never()).save(any());
+    }
+
+    @Test
+    void passwordChangeForAbsentUserReturnsSafe401() throws Exception {
+        UUID absentId = UUID.randomUUID();
+        assertError(changePassword(PASSWORD, "New-" + UUID.randomUUID(), jwt.generateToken(absentId)), 401, "Неверная почта или пароль");
+        verify(users).findById(absentId);
+        verify(users, never()).save(any());
+    }
+
+    @Test
+    void passwordChangeOwnershipIgnoresQueryIdentityForBothAccounts() throws Exception {
+        UUID otherId = UUID.randomUUID();
+        String otherPassword = "Other-" + UUID.randomUUID();
+        User other = profileRow(otherId, "Other user", "other@example.invalid", "https://example.com/other.png");
+        other.setPasswordHash(encoder.encode(otherPassword));
+        when(users.findById(otherId)).thenReturn(Optional.of(other));
+        User before = copy(account);
+        User otherBefore = copy(other);
+        String next = "New-" + UUID.randomUUID();
+        String token = jwt.generateToken(USER_ID);
+        assertError(patch("/api/me/password?userId=" + otherId,
+                Map.of("currentPassword", otherPassword, "newPassword", next), token), 400, "Некорректные данные запроса");
+        assertNoContent(patch("/api/me/password?userId=" + otherId,
+                Map.of("currentPassword", PASSWORD, "newPassword", next), token));
+        assertTrue(encoder.matches(next, account.getPasswordHash()), "Only authenticated account must change");
+        assertUnrelatedFields(other, otherBefore);
+        String firstHash = account.getPasswordHash();
+        String otherNext = "New-" + UUID.randomUUID();
+        assertNoContent(patch("/api/me/password?userId=" + USER_ID,
+                Map.of("currentPassword", otherPassword, "newPassword", otherNext), jwt.generateToken(otherId)));
+        assertTrue(encoder.matches(otherNext, other.getPasswordHash()), "Second account must change its own password");
+        assertTrue(firstHash.equals(account.getPasswordHash()), "Second account cannot change the first account");
+        assertProfileFieldsPreserved(account, before);
+        assertProfileFieldsPreserved(other, otherBefore);
+        verify(users).save(account);
+        verify(users).save(other);
+    }
+
+    private HttpResponse<String> changePassword(String current, String next, String token) throws Exception {
+        return patch("/api/me/password", Map.of("currentPassword", current, "newPassword", next), token);
+    }
+
+    private void assertNoContent(HttpResponse<String> response) {
+        assertThat(response.statusCode()).isEqualTo(204);
+        assertTrue(response.body().isEmpty(), "Password change must return no body, hash, or replacement token");
+    }
+
+    private void assertProfileFieldsPreserved(User actual, User before) {
+        assertTrue(before.getId().equals(actual.getId()), "UUID must be preserved");
+        assertTrue(before.getName().equals(actual.getName()), "Name must be preserved");
+        assertTrue(before.getEmail().equals(actual.getEmail()), "Email must be preserved");
+        assertTrue(java.util.Objects.equals(before.getAvatar(), actual.getAvatar()), "Avatar must be preserved");
+        assertTrue(before.getCreatedAt().equals(actual.getCreatedAt()), "Creation time must be preserved");
+    }
+
     private HttpResponse<String> patch(String path, Object body, String token) throws Exception {
         return send("PATCH", path, json.writeValueAsString(body), token);
     }
@@ -311,6 +486,10 @@ class AuthHttpTest {
         }
     }
 
+    private HttpResponse<String> post(String path, Object body) throws Exception {
+        return send("POST", path, json.writeValueAsString(body), null);
+    }
+
     private HttpResponse<String> send(String method, String path, String body, String token) throws Exception {
         var request = HttpRequest.newBuilder(URI.create("http://localhost:" + port + path))
                 .timeout(Duration.ofSeconds(10)).header("Content-Type", "application/json")
@@ -328,7 +507,13 @@ class AuthHttpTest {
         assertTrue(message.equals(body.path("message").asText()), "Error must contain only the agreed safe message");
     }
 
-
-}
+    private void assertSuccess(HttpResponse<String> response, UUID id) throws Exception {
+        assertThat(response.statusCode()).isEqualTo(200);
+        JsonNode body = json.readTree(response.body());
+        assertThat(body.properties()).extracting(Map.Entry::getKey).containsExactlyInAnyOrder("token", "user");
+        assertThat(body.path("user").properties()).extracting(Map.Entry::getKey).containsExactlyInAnyOrder("id", "email", "name");
+        assertTrue(id.toString().equals(body.path("user").path("id").asText()), "Expected user id");
+        assertTrue(id.equals(jwt.extractUserId(body.path("token").asText())), "JWT must identify saved user");
+    }
 
 }
