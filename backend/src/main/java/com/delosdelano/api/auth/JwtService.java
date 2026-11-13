@@ -20,7 +20,17 @@ public class JwtService {
     public JwtService(
             @Value("${jwt.secret}") String secret,
             @Value("${jwt.expiration-days}") long expirationDays) {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalStateException("JWT_SECRET is required and must not be blank");
+        }
+        byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
+        if (keyBytes.length < 32) {
+            throw new IllegalStateException("JWT_SECRET must contain at least 32 UTF-8 bytes for HMAC-SHA JWT signing");
+        }
+        if (expirationDays <= 0) {
+            throw new IllegalStateException("JWT_EXPIRATION_DAYS must be a positive number of days");
+        }
+        this.key = Keys.hmacShaKeyFor(keyBytes);
         this.expirationDays = expirationDays;
     }
 
