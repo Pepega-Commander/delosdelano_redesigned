@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { Shell } from "@/components/Shell";
+import { DoodleSquiggle, DoodleStar } from "@/components/Doodles";
 
 export const Route = createFileRoute("/contacts")({
   head: () => ({
@@ -110,9 +111,10 @@ function ContactsPage() {
     <Shell showFooter>
       <div className="mx-auto max-w-6xl px-6 py-16 md:py-20">
         {/* Hero */}
-        <div className="eyebrow flex items-center gap-3 !text-purple/80">
+        <div className="eyebrow flex items-center gap-3 !text-purple">
           <span className="inline-block h-px w-8 bg-purple/60" />
           Контакты
+          <DoodleStar className="h-5 w-5 text-purple/50" />
         </div>
         <h1 className="text-balance mt-5 text-[38px] leading-[1.08] font-light tracking-[-0.015em] md:text-[56px]">
           Наши психологи — <span className="text-purple">живые люди</span>, к которым можно прийти.
@@ -121,6 +123,7 @@ function ContactsPage() {
           Если приложение помогло заметить, но одному разобраться сложно — вот те, кому мы доверяем.
           Пока принимают только в Екатеринбурге.
         </p>
+        <DoodleSquiggle className="mt-5 h-5 w-32 text-purple/35" />
 
         {/* Filters */}
         <div className="mt-9 flex flex-col gap-4 rounded-2xl border border-ink/10 bg-cream p-4 md:flex-row md:items-center md:p-5">

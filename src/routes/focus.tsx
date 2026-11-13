@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Play, Pause, RotateCcw, Plus } from "lucide-react";
 import { Shell } from "@/components/Shell";
+import { DoodleStar } from "@/components/Doodles";
 import { store } from "@/lib/storage";
 import {
   decomposeTask,
@@ -290,11 +291,14 @@ function FocusPage() {
 
   return (
     <Shell>
-      <div className="mx-auto max-w-7xl px-4 py-10 md:px-8">
+      <div className="font-comfortaa mx-auto max-w-7xl px-4 py-10 md:px-8">
         <div className="mb-6 flex items-end justify-between gap-4 border-b border-ink/12 pb-4">
-          <h1 className="text-[36px] leading-none font-light text-ink md:text-[44px]">
-            Фокус-режим
-          </h1>
+          <div className="flex items-end gap-4">
+            <h1 className="text-[36px] leading-none font-light text-ink md:text-[44px]">
+              Фокус-режим
+            </h1>
+            <DoodleStar className="mb-1 h-6 w-6 text-purple/45" />
+          </div>
           <span className="stamp hidden md:inline-block">
             {running ? "В работе" : done ? "Готово" : "Готов"}
           </span>
@@ -313,13 +317,13 @@ function FocusPage() {
               value={task}
               onChange={(e) => setTask(e.target.value)}
               placeholder="Что делаем?"
-              className="w-full border-none bg-transparent p-0 text-[26px] leading-tight font-light text-ink outline-none placeholder:text-ink/30"
+              className="w-full border-none bg-transparent p-0 text-[26px] leading-tight font-light text-ink outline-none placeholder:text-ink/50"
             />
             <input
               value={why}
               onChange={(e) => setWhy(e.target.value)}
               placeholder="Зачем? (одна строка)"
-              className="mt-2 w-full border-none bg-transparent p-0 text-[13px] text-ink-soft outline-none placeholder:text-ink/30"
+              className="mt-2 w-full border-none bg-transparent p-0 text-[13px] text-ink-soft outline-none placeholder:text-ink/50"
             />
 
             <div className="mt-5 mb-4 flex flex-wrap items-center gap-2">
@@ -353,7 +357,7 @@ function FocusPage() {
 
             {kickstart && (
               <div className="mb-4 rounded-lg bg-mint px-3.5 py-3 text-[13px] leading-relaxed text-ink">
-                <div className="mb-1 text-[9px] uppercase tracking-[0.16em] text-ink/55">
+                <div className="mb-1 text-[9px] uppercase tracking-[0.16em] text-ink/70">
                   Первый шаг
                 </div>
                 {kickstart}
@@ -415,7 +419,7 @@ function FocusPage() {
                         value={s.text}
                         onChange={(e) => editStep(i, e.target.value)}
                         placeholder={`Шаг ${i + 1}`}
-                        className={`flex-1 border-none bg-transparent p-0 text-[14px] outline-none placeholder:text-ink/30 ${
+                        className={`flex-1 border-none bg-transparent p-0 text-[14px] outline-none placeholder:text-ink/50 ${
                           s.done ? "text-ink-soft line-through" : "text-ink"
                         }`}
                       />
@@ -449,7 +453,7 @@ function FocusPage() {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Мысли, идеи, вопросы к себе…"
-                className="min-h-[80px] w-full resize-none rounded-lg border border-ink/12 bg-paper-soft p-3 text-[13.5px] text-ink outline-none placeholder:text-ink/30 focus:border-purple"
+                className="min-h-[80px] w-full resize-none rounded-lg border border-ink/12 bg-paper-soft p-3 text-[13.5px] text-ink outline-none placeholder:text-ink/50 focus:border-purple"
               />
             </div>
           </div>
@@ -631,7 +635,7 @@ function FocusPage() {
                   }}
                   placeholder="Спросить у ИИ…"
                   rows={1}
-                  className="max-h-24 flex-1 resize-none rounded-lg border border-ink/12 bg-paper-soft p-2.5 text-[13px] text-ink outline-none placeholder:text-ink/30 focus:border-purple"
+                  className="max-h-24 flex-1 resize-none rounded-lg border border-ink/12 bg-paper-soft p-2.5 text-[13px] text-ink outline-none placeholder:text-ink/50 focus:border-purple"
                 />
                 <button
                   onClick={() => void sendChat()}

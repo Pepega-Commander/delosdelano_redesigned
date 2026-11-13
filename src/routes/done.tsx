@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { Shell } from "@/components/Shell";
 import { AuthGate } from "@/components/AuthGate";
+import { DoodleSquiggle, DoodleStar } from "@/components/Doodles";
 import { Button } from "@/components/ui/button";
 import { chapters, specialists, type Specialist } from "@/lib/plan-data";
 import { store, type PlanProgress } from "@/lib/storage";
@@ -60,9 +61,10 @@ function Inner({ name }: { name: string }) {
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
       <section className="animate-fade-in flex min-h-[80vh] flex-col justify-center">
-        <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-purple/80">
+        <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-purple">
           <span className="inline-block h-px w-8 bg-purple/60" />
           Финал
+          <DoodleStar className="h-5 w-5 text-purple/50" />
         </div>
         <h1 className="text-balance mt-4 text-[44px] leading-[1.04] font-light tracking-[-0.02em] md:text-[68px]">
           {name}, поздравляем.
@@ -72,6 +74,7 @@ function Inner({ name }: { name: string }) {
         <p className="mt-6 max-w-lg text-[15px] leading-[1.75] text-ink-soft">
           Вы прошли все пять глав плана. Это уже не намерение — это факт.
         </p>
+        <DoodleSquiggle className="mt-5 h-5 w-32 text-purple/35" />
 
         <div className="mt-10 rounded-2xl border border-ink/10 bg-cream p-6 shadow-[var(--shadow-1)] md:p-8">
           <div className="grid grid-cols-2 gap-6">
@@ -118,14 +121,14 @@ function Inner({ name }: { name: string }) {
 
           {last?.letter && (
             <div className="mt-6 rounded-xl bg-mint/60 p-5">
-              <div className="text-[9px] uppercase tracking-[0.16em] text-ink/55">Письмо себе</div>
+              <div className="text-[9px] uppercase tracking-[0.16em] text-ink/70">Письмо себе</div>
               <p className="mt-2 text-[20px] leading-snug text-ink/85">«{last.letter}»</p>
             </div>
           )}
         </div>
 
         <div className="mt-12 text-center">
-          <div className="text-[10px] uppercase tracking-[0.18em] text-purple/80">Сертификат</div>
+          <div className="text-[10px] uppercase tracking-[0.18em] text-purple">Сертификат</div>
           <p className="mx-auto mt-3 max-w-md text-[20px] leading-snug font-light">
             Вы получили сертификат на консультацию со специалистом
           </p>
@@ -140,7 +143,7 @@ function Inner({ name }: { name: string }) {
       </section>
 
       <section id="specialists" className="mt-16 border-t border-ink/10 pt-16">
-        <div className="text-[10px] uppercase tracking-[0.18em] text-purple/75">
+        <div className="text-[10px] uppercase tracking-[0.18em] text-purple">
           {quizType ? `Подобрано под ваш тип · ${quizType}` : "Специалисты"}
         </div>
         <h2 className="mt-3 text-[32px] leading-tight font-light md:text-[40px]">
@@ -187,7 +190,7 @@ function SpecialistCard({ s, index }: { s: Specialist; index: number }) {
           className="h-24 w-24 shrink-0 rounded-xl bg-mint object-cover"
         />
         <div className="min-w-0 flex-1">
-          <div className="text-[9px] uppercase tracking-[0.16em] text-purple/75">
+          <div className="text-[9px] uppercase tracking-[0.16em] text-purple">
             {s.category} · {s.role}
           </div>
           <div className="mt-1.5 text-[22px] leading-tight font-light">{s.name}</div>

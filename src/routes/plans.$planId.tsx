@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Check, ChevronLeft, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { Shell } from "@/components/Shell";
 import { AuthGate } from "@/components/AuthGate";
+import { DoodleStar } from "@/components/Doodles";
 import { Button } from "@/components/ui/button";
 import { getPlanTemplate, planChapters, accentClasses } from "@/lib/plans-catalog";
 import type { ChapterMedia } from "@/lib/plan-data";
@@ -28,7 +29,7 @@ export const Route = createFileRoute("/plans/$planId")({
   notFoundComponent: () => (
     <Shell>
       <div className="mx-auto max-w-md px-6 py-24 text-center">
-        <div className="text-[10px] uppercase tracking-[0.18em] text-purple/75">404</div>
+        <div className="text-[10px] uppercase tracking-[0.18em] text-purple">404</div>
         <h1 className="mt-3 text-[32px] font-light">Такого плана нет</h1>
         <Link to="/plans" className="btn-link mt-6 inline-block">
           К каталогу →
@@ -249,7 +250,7 @@ function Reader({ name, planId }: { name: string; planId: string }) {
               <PanelLeftClose size={16} />
             </button>
           </div>
-          <div className="mt-6 text-[10px] uppercase tracking-[0.18em] text-purple/75">{tpl.tag}</div>
+          <div className="mt-6 text-[10px] uppercase tracking-[0.18em] text-purple">{tpl.tag}</div>
           <div className="mt-2 text-xl leading-tight">{tpl.title}</div>
 
           <div className="mt-5">
@@ -332,9 +333,10 @@ function Reader({ name, planId }: { name: string; planId: string }) {
             <h1 className="text-balance relative mt-3 text-[36px] leading-[1.08] font-light md:text-[56px]">
               {chapter.title}
             </h1>
-            <p className="text-pretty relative mt-3 text-[15px] leading-relaxed text-purple/75">
+            <p className="text-pretty relative mt-3 text-[15px] leading-relaxed text-ink-soft">
               {chapter.subtitle}
             </p>
+            <DoodleStar className="absolute right-0 top-1 hidden h-9 w-9 text-purple/35 md:block" />
           </div>
 
           <article className="mt-10 space-y-10">
@@ -446,13 +448,13 @@ function Reader({ name, planId }: { name: string; planId: string }) {
                             );
                           })}
                         </div>
-                        <span className="hidden text-[9px] uppercase tracking-[0.14em] text-purple/70 sm:block whitespace-nowrap">
+                        <span className="hidden text-[9px] uppercase tracking-[0.14em] text-purple sm:block whitespace-nowrap">
                           это я
                         </span>
                       </div>
                       <div className="mt-2 flex items-center justify-between text-[9px] uppercase tracking-[0.14em] text-ink-soft sm:hidden">
                         <span>не про меня</span>
-                        <span className="text-purple/70">это я</span>
+                        <span className="text-purple">это я</span>
                       </div>
                     </li>
                   );
@@ -463,8 +465,7 @@ function Reader({ name, planId }: { name: string; planId: string }) {
                 <div
                   className="animate-fade-in mt-10 rounded-xl border p-6 md:p-8"
                   style={{
-                    borderColor:
-                      verdict.tone === "terra" ? "var(--purple)" : "var(--lav)",
+                    borderColor: verdict.tone === "terra" ? "var(--purple)" : "var(--lav)",
                     background: "var(--mint)",
                   }}
                 >
@@ -478,8 +479,7 @@ function Reader({ name, planId }: { name: string; planId: string }) {
                       className="font-light leading-none"
                       style={{
                         fontSize: "clamp(3.5rem, 10vw, 6rem)",
-                        color:
-                          verdict.tone === "terra" ? "var(--purple)" : "var(--ink)",
+                        color: verdict.tone === "terra" ? "var(--purple)" : "var(--ink)",
                       }}
                     >
                       {procPercent}%
@@ -493,13 +493,12 @@ function Reader({ name, planId }: { name: string; planId: string }) {
                       className="h-2 rounded-full transition-all duration-500"
                       style={{
                         width: `${procPercent}%`,
-                        background:
-                          verdict.tone === "terra" ? "var(--purple)" : "var(--lav)",
+                        background: verdict.tone === "terra" ? "var(--purple)" : "var(--lav)",
                       }}
                     />
                   </div>
                   <h3 className="mt-6 text-[22px] font-light">{verdict.title}</h3>
-                  <p className="mt-2 text-[13.5px] leading-relaxed text-ink/70">{verdict.text}</p>
+                  <p className="mt-2 text-[13.5px] leading-relaxed text-ink-soft">{verdict.text}</p>
                 </div>
               )}
             </section>
@@ -599,10 +598,7 @@ function Reader({ name, planId }: { name: string; planId: string }) {
 
                 <div className="flex flex-wrap items-center gap-3 pt-2">
                   {chapter.action && (
-                    <Link
-                      to="/focus"
-                      className="btn-outline"
-                    >
+                    <Link to="/focus" className="btn-outline">
                       Запустить таймер
                     </Link>
                   )}
@@ -643,9 +639,7 @@ function Reader({ name, planId }: { name: string; planId: string }) {
 
           {allDone && (
             <section className="animate-fade-in mt-20 rounded-2xl border border-ink/10 bg-cream p-8 shadow-[var(--shadow-2)] md:p-10">
-              <div className="text-[10px] uppercase tracking-[0.18em] text-purple/75">
-                Финал плана
-              </div>
+              <div className="text-[10px] uppercase tracking-[0.18em] text-purple">Финал плана</div>
               <h2 className="mt-2 text-[30px] leading-tight font-light md:text-[36px]">
                 {name}, письмо себе
               </h2>

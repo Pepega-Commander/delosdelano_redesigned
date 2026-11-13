@@ -17,7 +17,8 @@
  *   deep     #383351  – offset shadows / footer
  *   on-dark  #F8F5EF  – text on purple
  *
- * Type: Comfortaa 300 / 400 / 500 / 700 everywhere.
+ * Type: Unbounded everywhere, except the shell header/footer and the focus
+ * page, which keep Comfortaa.
  * Radii: soft, rounded — no more brutalist squares.
  */
 
@@ -78,15 +79,15 @@
   --color-deep: var(--deep);
   --color-on-dark: var(--on-dark);
 
-  --font-serif: "Comfortaa", ui-sans-serif, system-ui, sans-serif;
-  --font-display-editorial: "Comfortaa", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Comfortaa", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Comfortaa", ui-sans-serif, system-ui, sans-serif;
-  --font-hand: "Comfortaa", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Comfortaa", ui-sans-serif, system-ui, sans-serif;
-  --font-editorial: "Comfortaa", ui-sans-serif, system-ui, sans-serif;
-  --font-grotesk: "Comfortaa", ui-sans-serif, system-ui, sans-serif;
-  --font-archivo: "Comfortaa", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Unbounded", ui-sans-serif, system-ui, sans-serif;
+  --font-display-editorial: "Unbounded", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Unbounded", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Unbounded", ui-sans-serif, system-ui, sans-serif;
+  --font-hand: "Unbounded", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Unbounded", ui-sans-serif, system-ui, sans-serif;
+  --font-editorial: "Unbounded", ui-sans-serif, system-ui, sans-serif;
+  --font-grotesk: "Unbounded", ui-sans-serif, system-ui, sans-serif;
+  --font-archivo: "Unbounded", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
@@ -95,8 +96,8 @@
   --paper-soft: #f1eee6;
   --paper-dark: #cadbd3;
   --ink: #4b386d;
-  --ink-soft: #6e6685;
-  --ink-muted-2: #948ca6;
+  --ink-soft: #5e5379;
+  --ink-muted-2: #7c7292;
   --purple: #63547d;
   --lav: #9c90b0;
   --mint: #cadbd3;
@@ -206,7 +207,12 @@
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: color-mix(in oklab, var(--ink) 62%, transparent);
+  color: color-mix(in oklab, var(--ink) 82%, transparent);
+}
+
+/* The shell chrome and the focus page intentionally keep Comfortaa. */
+@utility font-comfortaa {
+  font-family: "Comfortaa", ui-sans-serif, system-ui, sans-serif;
 }
 
 @utility surface {
@@ -349,47 +355,6 @@
   text-wrap: pretty;
 }
 
-@utility font-editorial {
-  font-family: var(--font-sans);
-  letter-spacing: -0.01em;
-}
-
-@utility story-link {
-  position: relative;
-  display: inline-block;
-  color: inherit;
-  &::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -2px;
-    height: 1px;
-    width: 100%;
-    background: currentColor;
-    transform: scaleX(0);
-    transform-origin: bottom right;
-    transition: transform 0.35s var(--ease-out-soft);
-  }
-  &:hover::after {
-    transform: scaleX(1);
-    transform-origin: bottom left;
-  }
-}
-
-@utility focus-ring-brand {
-  &:focus-visible {
-    outline: 2px solid var(--purple);
-    outline-offset: 3px;
-  }
-}
-
-@utility paper-card {
-  background-color: var(--cream);
-  border: 1px solid color-mix(in oklab, var(--ink) 12%, transparent);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-}
-
 @utility card-brutal {
   background-color: var(--cream);
   border: 1px solid color-mix(in oklab, var(--ink) 12%, transparent);
@@ -416,29 +381,6 @@
     transform: translateY(-1px);
     box-shadow: var(--shadow-2);
   }
-}
-
-@utility marker {
-  background-color: var(--mint);
-  color: var(--ink);
-  padding: 0 0.25em;
-  border-radius: 4px;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-  line-height: 1.05;
-}
-
-@utility tape {
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  width: 96px;
-  height: 16px;
-  border-radius: 4px;
-  background: color-mix(in oklab, var(--lav) 70%, transparent);
-  transform: translateX(-50%) rotate(-2deg);
-  z-index: 2;
-  pointer-events: none;
 }
 
 @utility stamp {
@@ -523,15 +465,6 @@
   }
 }
 
-@utility sun-glow {
-  transition:
-    box-shadow 300ms var(--ease-out-soft),
-    transform 300ms var(--ease-out-soft);
-  &:hover {
-    box-shadow: var(--shadow-warm) !important;
-  }
-}
-
 @utility ink-glow {
   transition:
     box-shadow 300ms var(--ease-out-soft),
@@ -580,7 +513,7 @@
   background-color: color-mix(in oklab, var(--dot-tone) 100%, transparent) !important;
 }
 
-/* Comfortaa has no true italic; the synthesized slant is not part of the new
+/* Unbounded has no true italic; the synthesized slant is not part of the new
    editorial language. Emphasis is carried by colour and weight instead. */
 .italic {
   font-style: normal;
@@ -636,15 +569,16 @@
   }
 }
 
-/* Desktop nav: the current page is a small outlined pill, like the Figma frame. */
+/* Desktop nav: the current page is a filled purple pill with white text. */
 header nav a[data-status="active"] {
-  border: 1px solid color-mix(in oklab, var(--ink) 45%, transparent);
   border-radius: 999px;
-  background: color-mix(in oklab, var(--on-dark) 12%, transparent);
-  padding: 0.4rem 0.7rem;
-  font-size: 0.62rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  background: var(--purple);
+  color: var(--on-dark);
+  padding: 0.45rem 0.8rem;
+  opacity: 1;
+}
+header nav a[data-status="active"]:hover {
+  background: color-mix(in oklab, var(--purple) 88%, black);
 }
 
 @layer base {
@@ -682,7 +616,7 @@ header nav a[data-status="active"] {
     color: var(--ink);
     border-color: color-mix(in oklab, var(--ink) 22%, transparent);
     &::placeholder {
-      color: color-mix(in oklab, var(--ink) 42%, transparent);
+      color: color-mix(in oklab, var(--ink) 58%, transparent);
     }
     &:focus {
       outline: none;

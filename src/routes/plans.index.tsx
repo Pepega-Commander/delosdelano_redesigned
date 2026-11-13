@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
 import { Shell } from "@/components/Shell";
 import { AuthGate } from "@/components/AuthGate";
+import { DoodleSquiggle, DoodleStar } from "@/components/Doodles";
 import { planTemplates, accentClasses, type PlanTemplate } from "@/lib/plans-catalog";
 import { store, type PlanProgress } from "@/lib/storage";
 
@@ -54,9 +55,10 @@ function Inner({ name }: { name: string }) {
   const finishedCount = archive.length;
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-16">
+    <div className="relative mx-auto max-w-6xl px-6 py-16">
+      <DoodleStar className="absolute right-6 top-12 hidden h-10 w-10 text-purple/40 md:block" />
       {/* Editorial hero */}
-      <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-purple/80">
+      <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-purple">
         <span className="inline-block h-px w-8 bg-purple/60" />
         Каталог планов
       </div>
@@ -69,6 +71,7 @@ function Inner({ name }: { name: string }) {
         Каждый план — короткая книга из глав. Можно вести несколько параллельно, возвращаться к
         пройденным и начинать заново.
       </p>
+      <DoodleSquiggle className="mt-4 h-5 w-28 text-purple/35" />
 
       {/* Meta row */}
       <div className="mt-10 flex flex-wrap items-center gap-6 rounded-xl border border-ink/10 bg-cream px-5 py-4 text-[10px] uppercase tracking-[0.16em] text-ink-soft">
@@ -94,7 +97,7 @@ function Inner({ name }: { name: string }) {
 
       {finishedCount > 0 && (
         <section className="mt-20 border-t border-ink/10 pt-10">
-          <div className="text-[10px] uppercase tracking-[0.2em] text-purple/75">Архив</div>
+          <div className="text-[10px] uppercase tracking-[0.2em] text-purple">Архив</div>
           <h2 className="mt-3 text-[30px] leading-tight font-light md:text-[36px]">
             Планы, которые вы уже прошли
           </h2>
@@ -128,7 +131,7 @@ function Inner({ name }: { name: string }) {
                       {p.letter && (
                         <p className="mt-3 text-[14px] leading-snug text-ink-soft">«{p.letter}»</p>
                       )}
-                      <div className="mt-2 text-[9px] uppercase tracking-[0.14em] text-purple/70">
+                      <div className="mt-2 text-[9px] uppercase tracking-[0.14em] text-purple">
                         открыть снова
                       </div>
                     </Link>
@@ -184,8 +187,8 @@ function PlanCard({
   const bandText = tpl.accent === "terra" || tpl.accent === "ink" ? "text-on-dark" : "text-ink";
   const band = isActive ? "bg-purple text-on-dark" : `${acc.bg} ${bandText}`;
   const main = isActive ? "bg-deep text-on-dark" : "bg-cream";
-  const muted = isActive ? "text-on-dark/65" : "text-ink-soft";
-  const subtitleTone = isActive ? "text-mint" : "text-purple/75";
+  const muted = isActive ? "text-on-dark/80" : "text-ink-soft";
+  const subtitleTone = isActive ? "text-mint" : "text-purple";
   const divider = isActive ? "border-on-dark/20" : "border-ink/10";
 
   return (
@@ -196,14 +199,16 @@ function PlanCard({
       style={{ boxShadow: "var(--shadow-1)" }}
     >
       {/* Left band with the plan index */}
-      <div className={`flex w-[58px] shrink-0 flex-col justify-between p-4 md:w-[76px] md:p-5 ${band}`}>
+      <div
+        className={`flex w-[58px] shrink-0 flex-col justify-between p-4 md:w-[76px] md:p-5 ${band}`}
+      >
         <span className="text-[24px] leading-none font-light md:text-[32px]">
           {String(index + 1).padStart(2, "0")}
         </span>
         <span
           aria-hidden
           className={`text-[22px] leading-none transition-transform duration-300 ease-[var(--ease-out-soft)] group-hover:translate-x-1 ${
-            isActive ? "text-on-dark/70" : "text-ink/45"
+            isActive ? "text-on-dark/85" : "text-ink/65"
           }`}
         >
           →
@@ -223,7 +228,7 @@ function PlanCard({
               isActive
                 ? "border-on-dark/25 text-on-dark/80"
                 : status.kind === "finished"
-                  ? "border-purple/25 text-purple/80"
+                  ? "border-purple/40 text-purple"
                   : "border-ink/12 text-ink-soft"
             }`}
           >
@@ -248,7 +253,9 @@ function PlanCard({
             <span>~{tpl.minutes} мин</span>
           </div>
           {pct > 0 && (
-            <div className={`mt-3 h-1 w-full overflow-hidden rounded-full ${isActive ? "bg-on-dark/20" : "bg-mint/70"}`}>
+            <div
+              className={`mt-3 h-1 w-full overflow-hidden rounded-full ${isActive ? "bg-on-dark/20" : "bg-mint/70"}`}
+            >
               <div
                 className={`h-1 rounded-full transition-all duration-500 ${isActive ? "bg-mint" : acc.bg}`}
                 style={{ width: `${pct}%` }}

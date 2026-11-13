@@ -9,8 +9,8 @@ const NAV_ITEMS = [
   { to: "/deals", label: "Мои дела" },
   { to: "/focus", label: "Фокус" },
   { to: "/plans", label: "Каталог планов" },
-  { to: "/about", label: "О нас" },
   { to: "/contacts", label: "Контакты" },
+  { to: "/about", label: "О нас" },
 ] as const;
 
 export function Shell({
@@ -70,7 +70,7 @@ export function Shell({
   return (
     <div className="min-h-screen">
       <header
-        className={`sticky top-0 z-40 bg-lav text-ink transition-shadow duration-300 ease-[var(--ease-out-soft)] ${scrolled ? "shadow-[var(--shadow-2)]" : ""}`}
+        className={`font-comfortaa sticky top-0 z-40 bg-lav text-ink transition-shadow duration-300 ease-[var(--ease-out-soft)] ${scrolled ? "shadow-[var(--shadow-2)]" : ""}`}
       >
         <div className="mx-auto flex h-[58px] max-w-[1360px] items-center gap-4 px-5 md:px-8">
           <Link
@@ -80,12 +80,12 @@ export function Shell({
             DeloSdelano
           </Link>
 
-          <nav className="ml-4 hidden flex-1 items-center justify-center gap-5 text-[12.5px] leading-none lg:flex xl:gap-7">
+          <nav className="ml-4 hidden flex-1 items-center justify-center gap-4 text-[10px] leading-none font-medium tracking-[0.14em] uppercase lg:flex xl:gap-6">
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
-                className="nav-link whitespace-nowrap opacity-80 transition-opacity hover:opacity-100"
+                className="whitespace-nowrap rounded-full px-3 py-2 text-deep transition-colors hover:bg-deep/10 hover:text-deep"
                 activeOptions={{ exact: item.to === "/" }}
               >
                 {item.label}
@@ -128,7 +128,7 @@ export function Shell({
                     {notifs.slice(0, 6).map((n) => (
                       <li key={n.id} className="border-b border-ink/10 pb-2.5 text-[13px]">
                         {n.text}
-                        <div className="mt-1 text-[10px] uppercase tracking-[0.14em] text-ink/50">
+                        <div className="mt-1 text-[10px] uppercase tracking-[0.14em] text-ink/65">
                           {new Date(n.at).toLocaleString("ru-RU")}
                         </div>
                       </li>
@@ -221,9 +221,7 @@ export function Shell({
               </MenuLink>
               <div className="flex items-baseline gap-2 text-ink-soft">
                 <span>Обсуждения</span>
-                <span className="text-[10px] uppercase tracking-[0.16em] text-purple/70">
-                  W.I.P.
-                </span>
+                <span className="text-[10px] uppercase tracking-[0.16em] text-purple">W.I.P.</span>
               </div>
               <MenuLink to="/about" onClick={() => setMenuOpen(false)}>
                 О нас
@@ -240,17 +238,17 @@ export function Shell({
       <main>{children}</main>
 
       {showFooter && (
-        <footer id="footer" className="mt-24 bg-deep text-on-dark">
+        <footer id="footer" className="font-comfortaa mt-24 bg-deep text-on-dark">
           <div className="mx-auto grid max-w-[1360px] gap-10 px-6 py-16 md:grid-cols-3 md:px-8">
             <div>
               <div className="text-[25px] leading-none">DeloSdelano</div>
-              <p className="mt-4 max-w-[280px] text-[13px] leading-relaxed text-on-dark/70">
+              <p className="mt-4 max-w-[280px] text-[13px] leading-relaxed text-on-dark/85">
                 Тёплый инструмент самопознания. Без уведомлений и без давления.
               </p>
             </div>
             <div>
               <div className="text-[10px] uppercase tracking-[0.2em] text-mint/80">О нас</div>
-              <p className="mt-4 max-w-[340px] text-[13px] leading-relaxed text-on-dark/75">
+              <p className="mt-4 max-w-[340px] text-[13px] leading-relaxed text-on-dark/85">
                 Небольшая команда практикующих психологов и дизайнеров. Мы верим, что прокрастинация
                 — не порок, а сигнал.
               </p>
@@ -260,11 +258,11 @@ export function Shell({
               <ul className="mt-4 space-y-2 text-[15px] leading-relaxed">
                 <li>hello@delosdelano.ru</li>
                 <li>tg: @delosdelano</li>
-                <li className="text-[12px] text-on-dark/65">Москва · Санкт-Петербург</li>
+                <li className="text-[12px] text-on-dark/80">Москва · Санкт-Петербург</li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-on-dark/15 px-6 py-5 text-center text-[10px] uppercase tracking-[0.16em] text-on-dark/55">
+          <div className="border-t border-on-dark/20 px-6 py-5 text-center text-[10px] uppercase tracking-[0.16em] text-on-dark/75">
             © 2026 · Это не диагноз. Это инструмент самопознания.
           </div>
         </footer>

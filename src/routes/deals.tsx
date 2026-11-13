@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Shell } from "@/components/Shell";
+import { DoodleStar } from "@/components/Doodles";
 import { AuthGate } from "@/components/AuthGate";
 import { typeInfo } from "@/lib/quiz-data";
 import { planTemplates, getPlanTemplate, planChapters, accentClasses } from "@/lib/plans-catalog";
@@ -111,9 +112,10 @@ function Dashboard({ name }: { name: string }) {
   return (
     <>
       {/* HERO */}
-      <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-purple/80">
+      <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-purple">
         <span className="inline-block h-px w-8 bg-purple/60" />
         Мои дела · {formatToday(now)}
+        <DoodleStar className="h-5 w-5 text-purple/50" />
       </div>
       <h1 className="text-balance mt-4 text-[42px] leading-[1.04] font-light tracking-[-0.015em] md:text-[56px]">
         {greetingFor(now)}, <span className="text-purple">{name}.</span>
@@ -148,7 +150,7 @@ function Dashboard({ name }: { name: string }) {
           className="ink-glow group relative flex flex-col justify-between overflow-hidden rounded-xl bg-purple p-6 text-on-dark transition-transform duration-300 ease-[var(--ease-out-soft)] hover:-translate-y-[2px]"
           style={{ boxShadow: "var(--shadow-2)" }}
         >
-          <div className="text-[10px] uppercase tracking-[0.2em] text-on-dark/70">Один шаг</div>
+          <div className="text-[10px] uppercase tracking-[0.2em] text-on-dark/85">Один шаг</div>
           <div className="mt-6 text-[28px] leading-tight font-light">
             Начать фокус-сессию
             <span
@@ -158,7 +160,7 @@ function Dashboard({ name }: { name: string }) {
               →
             </span>
           </div>
-          <div className="mt-6 text-[9px] uppercase tracking-[0.16em] text-on-dark/65">
+          <div className="mt-6 text-[9px] uppercase tracking-[0.16em] text-on-dark/80">
             2 минуты · без давления
           </div>
         </Link>
@@ -195,7 +197,7 @@ function Dashboard({ name }: { name: string }) {
               const t = getPlanTemplate(a.planId ?? "full");
               const a2 = accentClasses(t?.accent ?? "terra");
               return (
-              <Link
+                <Link
                   key={i}
                   to="/plans/$planId"
                   params={{ planId: a.planId ?? "full" }}
@@ -258,9 +260,7 @@ function Stat({
       <div className="text-[9px] uppercase tracking-[0.14em] text-ink-soft">{label}</div>
       <div className={`mt-2 text-[34px] leading-none font-light ${toneClass}`}>{value}</div>
       {suffix && (
-        <div className="mt-1.5 text-[9px] uppercase tracking-[0.14em] text-ink-soft">
-          {suffix}
-        </div>
+        <div className="mt-1.5 text-[9px] uppercase tracking-[0.14em] text-ink-soft">{suffix}</div>
       )}
     </div>
   );
@@ -343,18 +343,14 @@ function TypeCard({ quiz }: { quiz: QuizResult | null }) {
           </p>
           <div className="mt-5 flex items-baseline gap-4">
             <div>
-              <div className="text-[9px] uppercase tracking-[0.14em] text-ink-soft">
-                Влияние
-              </div>
+              <div className="text-[9px] uppercase tracking-[0.14em] text-ink-soft">Влияние</div>
               <div className="mt-1 text-[28px] leading-none font-light">
                 {quiz.impact}
                 <span className="text-[16px] text-ink-soft">/7</span>
               </div>
             </div>
             <div className="flex-1">
-              <div className="text-[9px] uppercase tracking-[0.14em] text-ink-soft">
-                Пройден
-              </div>
+              <div className="text-[9px] uppercase tracking-[0.14em] text-ink-soft">Пройден</div>
               <div className="mt-1.5 text-[13px]">
                 {new Date(quiz.takenAt).toLocaleDateString("ru-RU")}
               </div>
@@ -487,9 +483,7 @@ function CheckinCard({ existing, onSaved }: { existing?: Checkin; onSaved: () =>
 
   return (
     <div className="rounded-2xl border border-ink/10 bg-cream p-6">
-      <div className="text-[10px] uppercase tracking-[0.2em] text-purple/80">
-        Чек-ин · сегодня
-      </div>
+      <div className="text-[10px] uppercase tracking-[0.2em] text-purple">Чек-ин · сегодня</div>
       <div className="mt-3 text-[22px] leading-tight font-light">
         {existing ? "Обновить запись" : "Как прошёл день?"}
       </div>
@@ -530,9 +524,7 @@ function CheckinCard({ existing, onSaved }: { existing?: Checkin; onSaved: () =>
         <div className="flex items-baseline gap-4">
           <button className="btn-primary">Сохранить</button>
           {savedFlash && (
-            <span className="text-[10px] uppercase tracking-[0.14em] text-purple">
-              — записано
-            </span>
+            <span className="text-[10px] uppercase tracking-[0.14em] text-purple">— записано</span>
           )}
         </div>
       </form>

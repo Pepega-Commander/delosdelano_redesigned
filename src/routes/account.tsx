@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Camera, Trash2, Eye, EyeOff, X, User as UserIcon, Mail, Lock, LogOut } from "lucide-react";
 import { Shell } from "@/components/Shell";
 import { AuthGate } from "@/components/AuthGate";
+import { DoodleStar } from "@/components/Doodles";
 import { store, type User } from "@/lib/storage";
 
 export const Route = createFileRoute("/account")({
@@ -184,9 +185,10 @@ function AccountPage() {
   return (
     <Shell>
       <div className="mx-auto max-w-5xl px-6 py-12">
-        <div className="text-[10px] uppercase tracking-[0.2em] text-purple/75">Аккаунт</div>
+        <div className="text-[10px] uppercase tracking-[0.2em] text-purple">Аккаунт</div>
         {/* Compact hero: avatar + name + quick facts */}
         <div className="relative mt-4 flex flex-col gap-5 overflow-hidden rounded-2xl bg-deep p-6 text-on-dark shadow-[var(--shadow-2)] sm:flex-row sm:items-center md:gap-6 md:p-8">
+          <DoodleStar className="pointer-events-none absolute -right-2 -top-2 h-16 w-16 text-on-dark/20" />
           <div className="relative w-fit">
             <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-mint md:h-24 md:w-24">
               {avatar ? (
@@ -203,7 +205,7 @@ function AccountPage() {
             >
               <Camera size={14} />
             </button>
-            <div className="mt-2 flex items-center justify-center gap-1 text-[9px] uppercase tracking-[0.12em] text-on-dark/55">
+            <div className="mt-2 flex items-center justify-center gap-1 text-[9px] uppercase tracking-[0.12em] text-on-dark/80">
               <Camera size={10} /> Загрузить
             </div>
             <input
@@ -218,7 +220,7 @@ function AccountPage() {
             <h1 className="truncate text-[30px] leading-tight font-light md:text-[38px]">
               Привет, {user.name}
             </h1>
-            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] text-on-dark/65">
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] text-on-dark/85">
               <span className="inline-flex items-center gap-1.5">
                 <Mail size={12} /> {user.email ?? "почта не указана"}
               </span>
@@ -231,7 +233,7 @@ function AccountPage() {
           <button
             type="button"
             onClick={logout}
-            className="inline-flex shrink-0 items-center gap-2 self-start rounded-lg border border-on-dark/30 px-4 py-2.5 text-[10px] uppercase tracking-[0.14em] text-on-dark/85 transition-colors hover:bg-on-dark hover:text-deep sm:self-center"
+            className="inline-flex shrink-0 items-center gap-2 self-start rounded-lg border border-on-dark/40 px-4 py-2.5 text-[10px] uppercase tracking-[0.14em] text-on-dark transition-colors hover:bg-on-dark hover:text-deep sm:self-center"
           >
             <LogOut size={12} /> Выйти <span aria-hidden>↗</span>
           </button>
@@ -271,161 +273,161 @@ function AccountPage() {
                   title="Ник и аватар"
                   sub={`Ник используется в текстах приложения: «Молодец, ${name || "имя"}, ты справился!».`}
                 />
-              <form onSubmit={save} className="space-y-6">
-                <FieldLabel label="Ник">
-                  <input
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="account-input mt-2 w-full px-4 py-3 text-[16px]"
-                    placeholder="Например: Ася"
-                  />
-                </FieldLabel>
-                <div className="flex flex-wrap items-center gap-4 pt-1">
-                  <PrimaryBtn>Сохранить</PrimaryBtn>
-                  {avatar && (
-                    <button
-                      type="button"
-                      onClick={removeAvatar}
-                      className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.14em] text-ink-soft transition-colors hover:text-purple"
-                    >
-                      <Trash2 size={12} /> Убрать аватар
-                    </button>
-                  )}
-                  {saved && <SavedMark />}
-                  <button
-                    type="button"
-                    onClick={logout}
-                    className="ml-auto inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-ink-soft underline underline-offset-4 transition-colors hover:text-purple md:hidden"
-                  >
-                    <LogOut size={12} /> Выйти
-                  </button>
-                </div>
-              </form>
-            </PanelCard>
-          )}
-
-          {tab === "email" && (
-            <PanelCard className="animate-fade-in space-y-6">
-              <FormHeader
-                title="Почта"
-                sub="Используется для входа и восстановления доступа. Для смены — введите текущий пароль."
-              />
-              <form onSubmit={saveEmail} className="space-y-5">
-                <FieldLabel label="Почта">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="account-input mt-2 w-full px-4 py-3 text-[16px]"
-                    placeholder="you@example.com"
-                    autoComplete="email"
-                  />
-                </FieldLabel>
-                <FieldLabel label="Повторите почту">
-                  <input
-                    type="email"
-                    value={emailConfirm}
-                    onChange={(e) => setEmailConfirm(e.target.value)}
-                    className="account-input mt-2 w-full px-4 py-3 text-[16px]"
-                    placeholder="ещё раз, чтобы не ошибиться"
-                    autoComplete="email"
-                  />
-                </FieldLabel>
-                {user?.password && (
-                  <FieldLabel label="Текущий пароль">
+                <form onSubmit={save} className="space-y-6">
+                  <FieldLabel label="Ник">
                     <input
-                      type="password"
-                      value={emailConfirmPass}
-                      onChange={(e) => setEmailConfirmPass(e.target.value)}
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                       className="account-input mt-2 w-full px-4 py-3 text-[16px]"
-                      autoComplete="current-password"
-                      placeholder="Подтвердите паролем"
+                      placeholder="Например: Ася"
                     />
                   </FieldLabel>
-                )}
-                <div className="flex flex-wrap items-center gap-4 pt-1">
-                  <PrimaryBtn>Сохранить изменения</PrimaryBtn>
-                  {user?.password && (
+                  <div className="flex flex-wrap items-center gap-4 pt-1">
+                    <PrimaryBtn>Сохранить</PrimaryBtn>
+                    {avatar && (
+                      <button
+                        type="button"
+                        onClick={removeAvatar}
+                        className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.14em] text-ink-soft transition-colors hover:text-purple"
+                      >
+                        <Trash2 size={12} /> Убрать аватар
+                      </button>
+                    )}
+                    {saved && <SavedMark />}
                     <button
                       type="button"
-                      onClick={() => setForgotOpen(true)}
-                      className="text-[10px] uppercase tracking-[0.14em] text-ink-soft underline underline-offset-4 transition-colors hover:text-purple"
+                      onClick={logout}
+                      className="ml-auto inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-ink-soft underline underline-offset-4 transition-colors hover:text-purple md:hidden"
                     >
-                      Забыли пароль?
+                      <LogOut size={12} /> Выйти
                     </button>
-                  )}
-                  {emailMsg && <Msg tone={emailMsg.tone}>{emailMsg.text}</Msg>}
-                </div>
-              </form>
-            </PanelCard>
-          )}
+                  </div>
+                </form>
+              </PanelCard>
+            )}
 
-          {tab === "password" && (
-            <PanelCard className="animate-fade-in space-y-6">
-              <FormHeader
-                title={user?.password ? "Изменить пароль" : "Добавить пароль"}
-                sub={
-                  user?.password
-                    ? "Для смены нужен текущий пароль. Забыли — восстановите по почте."
-                    : "Минимум 6 символов. Понадобится для входа в аккаунт."
-                }
-              />
-              <form onSubmit={savePassword} className="space-y-5">
-                {user?.password && (
-                  <FieldLabel label="Текущий пароль">
+            {tab === "email" && (
+              <PanelCard className="animate-fade-in space-y-6">
+                <FormHeader
+                  title="Почта"
+                  sub="Используется для входа и восстановления доступа. Для смены — введите текущий пароль."
+                />
+                <form onSubmit={saveEmail} className="space-y-5">
+                  <FieldLabel label="Почта">
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="account-input mt-2 w-full px-4 py-3 text-[16px]"
+                      placeholder="you@example.com"
+                      autoComplete="email"
+                    />
+                  </FieldLabel>
+                  <FieldLabel label="Повторите почту">
+                    <input
+                      type="email"
+                      value={emailConfirm}
+                      onChange={(e) => setEmailConfirm(e.target.value)}
+                      className="account-input mt-2 w-full px-4 py-3 text-[16px]"
+                      placeholder="ещё раз, чтобы не ошибиться"
+                      autoComplete="email"
+                    />
+                  </FieldLabel>
+                  {user?.password && (
+                    <FieldLabel label="Текущий пароль">
+                      <input
+                        type="password"
+                        value={emailConfirmPass}
+                        onChange={(e) => setEmailConfirmPass(e.target.value)}
+                        className="account-input mt-2 w-full px-4 py-3 text-[16px]"
+                        autoComplete="current-password"
+                        placeholder="Подтвердите паролем"
+                      />
+                    </FieldLabel>
+                  )}
+                  <div className="flex flex-wrap items-center gap-4 pt-1">
+                    <PrimaryBtn>Сохранить изменения</PrimaryBtn>
+                    {user?.password && (
+                      <button
+                        type="button"
+                        onClick={() => setForgotOpen(true)}
+                        className="text-[10px] uppercase tracking-[0.14em] text-ink-soft underline underline-offset-4 transition-colors hover:text-purple"
+                      >
+                        Забыли пароль?
+                      </button>
+                    )}
+                    {emailMsg && <Msg tone={emailMsg.tone}>{emailMsg.text}</Msg>}
+                  </div>
+                </form>
+              </PanelCard>
+            )}
+
+            {tab === "password" && (
+              <PanelCard className="animate-fade-in space-y-6">
+                <FormHeader
+                  title={user?.password ? "Изменить пароль" : "Добавить пароль"}
+                  sub={
+                    user?.password
+                      ? "Для смены нужен текущий пароль. Забыли — восстановите по почте."
+                      : "Минимум 6 символов. Понадобится для входа в аккаунт."
+                  }
+                />
+                <form onSubmit={savePassword} className="space-y-5">
+                  {user?.password && (
+                    <FieldLabel label="Текущий пароль">
+                      <input
+                        type={showPass ? "text" : "password"}
+                        value={currentPass}
+                        onChange={(e) => setCurrentPass(e.target.value)}
+                        className="account-input mt-2 w-full px-4 py-3 text-[16px]"
+                        autoComplete="current-password"
+                      />
+                    </FieldLabel>
+                  )}
+                  <FieldLabel label="Новый пароль">
                     <input
                       type={showPass ? "text" : "password"}
-                      value={currentPass}
-                      onChange={(e) => setCurrentPass(e.target.value)}
+                      value={newPass}
+                      onChange={(e) => setNewPass(e.target.value)}
                       className="account-input mt-2 w-full px-4 py-3 text-[16px]"
-                      autoComplete="current-password"
+                      autoComplete="new-password"
                     />
                   </FieldLabel>
-                )}
-                <FieldLabel label="Новый пароль">
-                  <input
-                    type={showPass ? "text" : "password"}
-                    value={newPass}
-                    onChange={(e) => setNewPass(e.target.value)}
-                    className="account-input mt-2 w-full px-4 py-3 text-[16px]"
-                    autoComplete="new-password"
-                  />
-                </FieldLabel>
-                <FieldLabel label="Повторите пароль">
-                  <input
-                    type={showPass ? "text" : "password"}
-                    value={confirmPass}
-                    onChange={(e) => setConfirmPass(e.target.value)}
-                    className="account-input mt-2 w-full px-4 py-3 text-[16px]"
-                    autoComplete="new-password"
-                  />
-                </FieldLabel>
-                <div className="flex flex-wrap items-center gap-4 pt-1">
-                  <PrimaryBtn>Сохранить изменения</PrimaryBtn>
-                  <button
-                    type="button"
-                    onClick={() => setShowPass((v) => !v)}
-                    className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.14em] text-ink-soft transition-colors hover:text-purple"
-                  >
-                    {showPass ? <EyeOff size={12} /> : <Eye size={12} />}
-                    {showPass ? "Скрыть" : "Показать"}
-                  </button>
-                  {user?.password && (
+                  <FieldLabel label="Повторите пароль">
+                    <input
+                      type={showPass ? "text" : "password"}
+                      value={confirmPass}
+                      onChange={(e) => setConfirmPass(e.target.value)}
+                      className="account-input mt-2 w-full px-4 py-3 text-[16px]"
+                      autoComplete="new-password"
+                    />
+                  </FieldLabel>
+                  <div className="flex flex-wrap items-center gap-4 pt-1">
+                    <PrimaryBtn>Сохранить изменения</PrimaryBtn>
                     <button
                       type="button"
-                      onClick={() => setForgotOpen(true)}
-                      className="text-[10px] uppercase tracking-[0.14em] text-ink-soft underline underline-offset-4 transition-colors hover:text-purple"
+                      onClick={() => setShowPass((v) => !v)}
+                      className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.14em] text-ink-soft transition-colors hover:text-purple"
                     >
-                      Забыли пароль?
+                      {showPass ? <EyeOff size={12} /> : <Eye size={12} />}
+                      {showPass ? "Скрыть" : "Показать"}
                     </button>
-                  )}
-                  {passMsg && <Msg tone={passMsg.tone}>{passMsg.text}</Msg>}
-                </div>
-              </form>
-            </PanelCard>
-          )}
+                    {user?.password && (
+                      <button
+                        type="button"
+                        onClick={() => setForgotOpen(true)}
+                        className="text-[10px] uppercase tracking-[0.14em] text-ink-soft underline underline-offset-4 transition-colors hover:text-purple"
+                      >
+                        Забыли пароль?
+                      </button>
+                    )}
+                    {passMsg && <Msg tone={passMsg.tone}>{passMsg.text}</Msg>}
+                  </div>
+                </form>
+              </PanelCard>
+            )}
+          </div>
         </div>
-      </div>
       </div>
 
       {forgotOpen && (
@@ -572,7 +574,7 @@ function ForgotPasswordModal({
           <X size={18} />
         </button>
 
-        <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.18em] text-purple/75">
+        <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.18em] text-purple">
           <span className="inline-block h-px w-8 bg-purple/50" />
           Восстановление
         </div>

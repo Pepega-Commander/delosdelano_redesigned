@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Shell } from "@/components/Shell";
+import { DoodleSquiggle, DoodleStar } from "@/components/Doodles";
 import { Button } from "@/components/ui/button";
 import { typeInfo } from "@/lib/quiz-data";
 import { store, type QuizResult } from "@/lib/storage";
@@ -28,7 +29,7 @@ function ResultPage() {
     return (
       <Shell>
         <div className="mx-auto max-w-2xl px-6 py-20">
-          <div className="eyebrow text-purple/75">Результат</div>
+          <div className="eyebrow text-purple">Результат</div>
           <h1 className="mt-3 text-[36px] leading-tight font-light md:text-[44px]">
             Опрос не пройден
           </h1>
@@ -48,13 +49,15 @@ function ResultPage() {
   return (
     <Shell>
       <div className="mx-auto max-w-5xl px-6 py-12 md:py-16">
-        <div className="text-[10px] uppercase tracking-[0.18em] text-purple/75">
+        <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.18em] text-purple">
           Диагностика · {new Date(q.takenAt).toLocaleDateString("ru-RU")}
+          <DoodleStar className="h-5 w-5 text-purple/50" />
         </div>
         <h1 className="text-balance mt-4 text-[38px] leading-[1.1] font-light tracking-[-0.015em] md:text-[54px]">
           {name ? `${name}, твой тип — ` : "Ваш тип — "}
           <span className="text-purple">{info.name}</span>
         </h1>
+        <DoodleSquiggle className="mt-4 h-5 w-32 text-purple/35" />
 
         <div className="mt-10 grid gap-4 md:grid-cols-[1.15fr_0.85fr]">
           <div className="rounded-2xl border border-ink/10 bg-cream p-7 shadow-[var(--shadow-1)] md:p-9">
@@ -67,9 +70,7 @@ function ResultPage() {
 
           <aside className="flex flex-col justify-between rounded-2xl bg-mint p-7 md:p-9">
             <div>
-              <div className="text-[10px] uppercase tracking-[0.18em] text-ink/55">
-                Что дальше
-              </div>
+              <div className="text-[10px] uppercase tracking-[0.18em] text-ink/70">Что дальше</div>
               <p className="mt-3 text-[15px] leading-relaxed text-ink/80">
                 Насколько сильно это влияет — вы оцените в главе III персонального плана.
               </p>

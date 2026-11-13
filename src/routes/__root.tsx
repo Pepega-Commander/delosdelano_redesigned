@@ -15,7 +15,7 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-paper px-4">
       <div className="w-full max-w-md rounded-2xl border border-ink/10 bg-cream p-10 text-center shadow-[var(--shadow-2)]">
-        <div className="eyebrow text-purple/75">Страница не найдена</div>
+        <div className="eyebrow text-purple">Страница не найдена</div>
         <h1 className="mt-4 text-[72px] leading-none font-light tracking-[-0.04em] text-purple">
           404
         </h1>
@@ -38,7 +38,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-paper px-4">
       <div className="w-full max-w-md rounded-2xl border border-ink/10 bg-cream p-10 text-center shadow-[var(--shadow-2)]">
-        <div className="eyebrow text-purple/75">Ошибка</div>
+        <div className="eyebrow text-purple">Ошибка</div>
         <h1 className="mt-4 text-[26px] font-light tracking-tight text-foreground">
           This page didn't load
         </h1>
@@ -93,7 +93,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Unbounded:wght@200..900&display=swap",
       },
     ],
   }),

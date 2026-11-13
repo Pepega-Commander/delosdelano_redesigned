@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Shell } from "@/components/Shell";
+import { DoodleSquiggle, DoodleStar } from "@/components/Doodles";
 import { play } from "@/lib/sfx";
 
 export const Route = createFileRoute("/about")({
@@ -35,9 +36,6 @@ interface Member {
   quote: string;
   bio: string;
   tone: Tone;
-  rotate: string;
-  offsetY: string;
-  tapeOffset: string;
   fileNo: string;
 }
 
@@ -51,9 +49,6 @@ const TEAM: Member[] = [
     quote: "Слежу, чтобы код работал, а текст лечил, а не калечил.",
     bio: "Собирает команду, режиссирует голос продукта. Пишет так, чтобы после текста хотелось выдохнуть, а не оправдываться.",
     tone: "terra",
-    rotate: "rotate-[-4deg]",
-    offsetY: "md:mt-2",
-    tapeOffset: "left-1/2 -translate-x-1/2 -top-3",
     fileNo: "№ 01",
   },
   {
@@ -65,9 +60,6 @@ const TEAM: Member[] = [
     quote: "Делаю интерфейс, который обнимает визуально.",
     bio: "Отвечает за то, как продукт выглядит и как ощущается. Любит тёплую бумагу, честные цвета и паузы в композиции.",
     tone: "pink",
-    rotate: "rotate-[3deg]",
-    offsetY: "md:mt-10",
-    tapeOffset: "left-4 -top-3 rotate-[-8deg]",
     fileNo: "№ 02",
   },
   {
@@ -79,9 +71,6 @@ const TEAM: Member[] = [
     quote: "Оживляю пиксели Ильгама и заставляю кнопки летать.",
     bio: "Превращает макеты в интерфейс, который отвечает на клик. Верит, что микро-анимация — это забота, а не украшение.",
     tone: "sage",
-    rotate: "rotate-[-2deg]",
-    offsetY: "md:mt-6",
-    tapeOffset: "right-6 -top-3 rotate-[6deg]",
     fileNo: "№ 03",
   },
   {
@@ -93,9 +82,6 @@ const TEAM: Member[] = [
     quote: "Всё скрытое и сложное работает здесь. Базы данных тоже имеют душу.",
     bio: "Строит невидимую часть: базы, API, надёжность. Считает, что хорошая архитектура — это когда её не замечают.",
     tone: "ink",
-    rotate: "rotate-[4deg]",
-    offsetY: "md:mt-0",
-    tapeOffset: "left-1/3 -top-3 rotate-[-4deg]",
     fileNo: "№ 04",
   },
 ];
@@ -121,9 +107,10 @@ function AboutPage() {
       <section className="relative mx-auto w-full max-w-[1400px] px-6 py-16 md:px-10 md:py-24">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-purple/80">
+          <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-purple">
             <span className="inline-block h-px w-8 bg-purple/60" />
             Досье · команда
+            <DoodleStar className="h-5 w-5 text-purple/50" />
           </div>
           <div className="text-[10px] uppercase tracking-[0.2em] text-ink-soft">
             04 / 04 · Екатеринбург
@@ -139,6 +126,7 @@ function AboutPage() {
           Разложили на столе: возьмите карточку — откроется досье. Ничего лишнего, только имена,
           роли и показания под протокол.
         </p>
+        <DoodleSquiggle className="mt-5 h-5 w-32 text-purple/35" />
 
         {/* Desk with polaroids */}
         <div
@@ -187,7 +175,7 @@ function Timeline() {
   return (
     <section aria-label="История команды" className="mt-24 md:mt-32">
       <div className="flex items-baseline justify-between">
-        <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-purple/80">
+        <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-purple">
           <span className="inline-block h-px w-8 bg-purple/60" />
           Хронология
         </div>
@@ -248,10 +236,10 @@ function Polaroid({ m, onOpen }: { m: Member; onOpen: () => void }) {
             }}
           />
           <span className={`text-6xl font-light md:text-7xl ${t.text}`}>{m.initials}</span>
-          <span className="absolute left-3 top-3 text-[8px] uppercase tracking-[0.16em] text-ink/45">
+          <span className="absolute left-3 top-3 text-[8px] uppercase tracking-[0.16em] text-ink/65">
             {m.fileNo}
           </span>
-          <span className="absolute bottom-3 right-3 text-[8px] uppercase tracking-[0.16em] text-ink/45">
+          <span className="absolute bottom-3 right-3 text-[8px] uppercase tracking-[0.16em] text-ink/65">
             04·2026
           </span>
         </div>
@@ -261,7 +249,7 @@ function Polaroid({ m, onOpen }: { m: Member; onOpen: () => void }) {
           <span className={`mt-1.5 block text-[10px] uppercase tracking-[0.16em] ${t.text}`}>
             {m.role}
           </span>
-          <span className="mt-3 block text-[9px] uppercase tracking-[0.16em] text-ink/40 opacity-0 transition-opacity group-hover:opacity-100">
+          <span className="mt-3 block text-[9px] uppercase tracking-[0.16em] text-ink/60 opacity-0 transition-opacity group-hover:opacity-100">
             Открыть досье →
           </span>
         </div>

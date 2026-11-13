@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { Shell } from "@/components/Shell";
+import { DoodleStar } from "@/components/Doodles";
 import { Button } from "@/components/ui/button";
 import { questions, typeInfo, type OptionKey } from "@/lib/quiz-data";
 import { store, type ProcType } from "@/lib/storage";
@@ -132,14 +133,17 @@ function QuizPage() {
         <div className="grid gap-10 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-14">
           {/* Left rail */}
           <aside className="lg:pt-10">
-            <div className="text-[10px] uppercase tracking-[0.2em] text-purple/75">
+            <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-purple">
               Опрос · тип прокрастинации
+              <DoodleStar className="h-5 w-5 text-purple/50" />
             </div>
             <div className="mt-4 flex items-baseline gap-2">
               <span className="text-[64px] leading-none font-light tracking-[-0.03em] text-ink md:text-[76px]">
                 {String(currentIdx + 1).padStart(2, "0")}
               </span>
-              <span className="text-[22px] font-light text-ink/35">/ {String(total).padStart(2, "0")}</span>
+              <span className="text-[22px] font-light text-ink/55">
+                / {String(total).padStart(2, "0")}
+              </span>
             </div>
             <p className="mt-5 max-w-[260px] text-[13.5px] leading-[1.7] text-ink-soft">
               8 коротких вопросов. Ответьте честно — получите план, который работает именно для
