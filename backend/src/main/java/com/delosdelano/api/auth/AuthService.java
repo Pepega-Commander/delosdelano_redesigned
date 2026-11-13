@@ -5,6 +5,7 @@ import com.delosdelano.api.auth.dto.LoginRequest;
 import com.delosdelano.api.auth.dto.RegisterRequest;
 import com.delosdelano.api.user.User;
 import com.delosdelano.api.user.UserRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,16 @@ public class AuthService {
         user.setEmail(request.email());
         user.setPasswordHash(passwordEncoder.encode(request.password()));
         user.setName(request.name());
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+        } catch (DataIntegrityViolationException exception) {
+            // Another registration can win after the precheck. The repository save
+            // transaction has rolled back before we check the committed account.
+            if (userRepository.existsByEmail(request.email())) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Email уже зарегистрирован");
+            }
+            throw exception;
+        }
         return toResponse(user);
     }
 

@@ -3,14 +3,18 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5434/delosdelano
-    username: delo
-    password: delo123
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: validate   # Flyway owns the schema; Hibernate only checks it matches
     open-in-view: false
 
 jwt:
-  secret: change-me-to-a-long-random-string-at-least-64-chars-aaaaaaaaaaaaaaa
-  expiration-days: 7
+  secret: ${JWT_SECRET}
+  expiration-days: ${JWT_EXPIRATION_DAYS:7}
+
+app:
+  cors:
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:8080}

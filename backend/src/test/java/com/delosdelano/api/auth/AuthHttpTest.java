@@ -1,20 +1,35 @@
 package com.delosdelano.api.auth;
 
+import com.delosdelano.api.common.ErrorResponse;
 import com.delosdelano.api.user.User;
 import com.delosdelano.api.user.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.Filter;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.core.Ordered;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -29,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -45,11 +61,14 @@ import static org.mockito.Mockito.*;
         "spring.main.banner-mode=off", "debug=false", "trace=false",
         "logging.level.root=OFF", "logging.level.org.springframework=OFF"
 })
+@Import(AuthHttpTest.Probes.class)
 class AuthHttpTest {
     private static final String EMAIL = "auth-test@example.invalid";
     private static final String PASSWORD = UUID.randomUUID().toString();
     private static final String SIGNING_KEY = UUID.randomUUID().toString().repeat(2);
+    private static final String ALLOWED_ORIGIN = "http://localhost:8080";
     private static final UUID USER_ID = UUID.randomUUID();
+    private static final ConcurrentLinkedQueue<String> DISPATCHES = new ConcurrentLinkedQueue<>();
 
     @LocalServerPort int port;
     @Autowired ObjectMapper json;
@@ -63,10 +82,12 @@ class AuthHttpTest {
     static void configuration(DynamicPropertyRegistry properties) {
         properties.add("jwt.secret", () -> SIGNING_KEY);
         properties.add("jwt.expiration-days", () -> 7);
+        properties.add("app.cors.allowed-origins", () -> ALLOWED_ORIGIN);
     }
 
     @BeforeEach
     void fixture() {
+        DISPATCHES.clear();
         User user = new User();
         user.setId(USER_ID);
         user.setEmail(EMAIL);
@@ -74,7 +95,116 @@ class AuthHttpTest {
         user.setPasswordHash(encoder.encode(PASSWORD));
         account = user;
         when(users.findByEmail(EMAIL)).thenReturn(Optional.of(user));
+        when(users.existsByEmail(EMAIL)).thenReturn(true);
         when(users.findById(USER_ID)).thenReturn(Optional.of(user));
+    }
+
+    @Test
+    void allowedOriginKeepsProtectedRequestJson401WithoutToken() throws Exception {
+        var response = send("GET", "/api/me", null, null, Map.of("Origin", ALLOWED_ORIGIN));
+
+        assertError(response, 401, ErrorResponse.forStatus(HttpStatus.UNAUTHORIZED).message());
+        assertThat(response.headers().firstValue("Access-Control-Allow-Origin")).contains(ALLOWED_ORIGIN);
+        assertThat(response.headers().firstValue("Access-Control-Allow-Credentials")).isEmpty();
+    }
+
+    @Test
+    void unlistedOriginIsRejectedWithoutCorsPermission() throws Exception {
+        var response = send("GET", "/api/me", null, null,
+                Map.of("Origin", "http://127.0.0.1:8080"));
+
+        assertThat(response.statusCode()).isEqualTo(403);
+        assertThat(response.headers().firstValue("Access-Control-Allow-Origin")).isEmpty();
+    }
+
+    @Test
+    void allowedPatchPreflightSucceedsWithoutJwt() throws Exception {
+        var response = send("OPTIONS", "/api/me", null, null, Map.of(
+                "Origin", ALLOWED_ORIGIN,
+                "Access-Control-Request-Method", "PATCH",
+                "Access-Control-Request-Headers", "Authorization, Content-Type"));
+
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.headers().firstValue("Access-Control-Allow-Origin")).contains(ALLOWED_ORIGIN);
+        assertThat(response.headers().firstValue("Access-Control-Allow-Methods").orElse("")).contains("PATCH");
+        String allowedHeaders = response.headers().firstValue("Access-Control-Allow-Headers").orElse("").toLowerCase();
+        assertThat(allowedHeaders).contains("authorization", "content-type");
+        assertThat(response.headers().firstValue("Access-Control-Allow-Credentials")).isEmpty();
+    }
+
+    @Test
+    void incorrectPasswordAndUnknownEmailReturnSame401WithoutErrorDispatch() throws Exception {
+        var wrong = post("/api/auth/login", Map.of("email", EMAIL, "password", "wrong-password"));
+        assertError(wrong, 401, "Неверная почта или пароль");
+        var unknown = post("/api/auth/login", Map.of("email", "unknown@example.invalid", "password", "wrong-password"));
+        assertError(unknown, 401, "Неверная почта или пароль");
+        assertTrue(wrong.body().equals(unknown.body()), "Both failures must have identical JSON");
+        assertThat(DISPATCHES).noneMatch(s -> s.startsWith("ERROR"));
+    }
+
+    @Test
+    void duplicateRegistrationReturns409() throws Exception {
+        assertError(post("/api/auth/register", registration(EMAIL)), 409, "Email уже зарегистрирован");
+        verify(users, never()).save(any());
+    }
+
+    @Test
+    void duplicateRaceReturns409() throws Exception {
+        when(users.existsByEmail(EMAIL)).thenReturn(false, true);
+        when(users.save(any())).thenThrow(new DataIntegrityViolationException("internal database detail"));
+        assertError(post("/api/auth/register", registration(EMAIL)), 409, "Email уже зарегистрирован");
+    }
+
+    @Test
+    void invalidRegistrationReturns400WithoutSaving() throws Exception {
+        for (var input : List.of(
+                Map.of("email", "invalid", "password", PASSWORD, "name", "Test"),
+                Map.of("email", "new@example.invalid", "password", "short", "name", "Test"),
+                Map.of("email", "new@example.invalid", "password", PASSWORD, "name", " "))) {
+            assertError(post("/api/auth/register", input), 400, "Некорректные данные запроса");
+        }
+        verify(users, never()).save(any());
+    }
+
+    @Test
+    void malformedJsonReturnsSafe400() throws Exception {
+        assertError(send("POST", "/api/auth/register", "{broken", null), 400, "Некорректные данные запроса");
+    }
+
+    @Test
+    void successfulLoginKeeps200AndSafeUserWithValidToken() throws Exception {
+        assertSuccess(post("/api/auth/login", Map.of("email", EMAIL, "password", PASSWORD)), USER_ID);
+    }
+
+    @Test
+    void successfulRegistrationKeeps200AndHashesPassword() throws Exception {
+        UUID id = UUID.randomUUID();
+        when(users.save(any(User.class))).thenAnswer(invocation -> {
+            User saved = invocation.getArgument(0);
+            assertTrue(!PASSWORD.equals(saved.getPasswordHash()), "Password must not be stored in plaintext");
+            assertTrue(encoder.matches(PASSWORD, saved.getPasswordHash()), "Stored hash must verify");
+            saved.setId(id);
+            return saved;
+        });
+        assertSuccess(post("/api/auth/register", registration("new@example.invalid")), id);
+    }
+
+    @Test
+    void privateEndpointAndNormalErrorRequestsRemainProtected() throws Exception {
+        for (String path : List.of("/test/protected", "/api/private", "/error")) {
+            assertError(send("GET", path, null, null), 401, "Неверная почта или пароль");
+        }
+        assertError(send("GET", "/test/protected", null, "invalid"), 401, "Неверная почта или пароль");
+        String expired = expiredToken(USER_ID);
+        assertError(send("GET", "/test/protected", null, expired), 401, "Неверная почта или пароль");
+        String forged = new JwtService(UUID.randomUUID().toString().repeat(2), 7).generateToken(USER_ID);
+        assertError(send("GET", "/test/protected", null, forged), 401, "Неверная почта или пароль");
+        assertThat(send("GET", "/test/protected", null, jwt.generateToken(USER_ID)).statusCode()).isEqualTo(200);
+    }
+
+    @Test
+    void authenticatedAccessDenialReturnsSafe403() throws Exception {
+        assertError(send("GET", "/test/forbidden", null, jwt.generateToken(USER_ID)), 403, "Доступ запрещён");
     }
 
     @Test
@@ -486,20 +616,30 @@ class AuthHttpTest {
         }
     }
 
+    private Map<String, String> registration(String email) {
+        return Map.of("email", email, "password", PASSWORD, "name", "Test user");
+    }
+
     private HttpResponse<String> post(String path, Object body) throws Exception {
         return send("POST", path, json.writeValueAsString(body), null);
     }
 
     private HttpResponse<String> send(String method, String path, String body, String token) throws Exception {
+        return send(method, path, body, token, Map.of());
+    }
+
+    private HttpResponse<String> send(String method, String path, String body, String token,
+                                      Map<String, String> headers) throws Exception {
         var request = HttpRequest.newBuilder(URI.create("http://localhost:" + port + path))
                 .timeout(Duration.ofSeconds(10)).header("Content-Type", "application/json")
                 .method(method, body == null ? HttpRequest.BodyPublishers.noBody() : HttpRequest.BodyPublishers.ofString(body));
+        headers.forEach(request::header);
         if (token != null) request.header("Authorization", "Bearer " + token);
         return http.send(request.build(), HttpResponse.BodyHandlers.ofString());
     }
 
     private void assertError(HttpResponse<String> response, int status, String message) throws Exception {
-        assertThat(response.statusCode()).isEqualTo(status);
+        assertThat(response.statusCode()).as("Servlet dispatches: %s", DISPATCHES).isEqualTo(status);
         assertThat(response.headers().firstValue("Content-Type").orElse("")).startsWith("application/json");
         JsonNode body = json.readTree(response.body());
         assertThat(body.properties()).extracting(Map.Entry::getKey).containsExactlyInAnyOrder("status", "message");
@@ -516,4 +656,30 @@ class AuthHttpTest {
         assertTrue(id.equals(jwt.extractUserId(body.path("token").asText())), "JWT must identify saved user");
     }
 
+    @TestConfiguration(proxyBeanMethods = false)
+    static class Probes {
+        @Bean
+        FilterRegistrationBean<Filter> dispatchRecorder() {
+            FilterRegistrationBean<Filter> bean = new FilterRegistrationBean<>((request, response, chain) -> {
+                HttpServletRequest http = (HttpServletRequest) request;
+                DISPATCHES.add(http.getDispatcherType() + " " + http.getRequestURI()
+                        + " originalStatus=" + http.getAttribute(RequestDispatcher.ERROR_STATUS_CODE));
+                chain.doFilter(request, response);
+            });
+            bean.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ERROR);
+            bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+            return bean;
+        }
+
+        @Bean ProtectedProbe protectedProbe() { return new ProtectedProbe(); }
+    }
+
+    @RestController
+    static class ProtectedProbe {
+        @GetMapping("/test/protected")
+        Map<String, Boolean> protectedResource() { return Map.of("ok", true); }
+
+        @GetMapping("/test/forbidden")
+        void forbiddenResource() { throw new AccessDeniedException("internal authorization detail"); }
+    }
 }
