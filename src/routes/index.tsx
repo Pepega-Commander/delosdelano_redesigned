@@ -4,8 +4,8 @@ import { ArrowRight, ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-reac
 import { Shell } from "@/components/Shell";
 import {
   DoodleArrow,
+  DoodleFlourish,
   DoodleLoop,
-  DoodleSpiral,
   DoodleSquiggle,
   DoodleStar,
   DoodleUnderline,
@@ -91,7 +91,7 @@ function Index() {
       {/* HERO */}
       <section className="mx-auto max-w-[1360px] px-5 pb-10 pt-8 md:px-8 md:pb-12 md:pt-12">
         <div className="relative">
-          <DoodleSpiral className="-ml-1 mb-4 h-24 w-28 text-ink/45 md:-ml-3 md:h-28 md:w-32" />
+          <DoodleFlourish className="-ml-1 mb-4 h-24 w-28 text-ink/45 md:-ml-3 md:h-28 md:w-32" />
           <DoodleStar className="absolute top-1 right-2 hidden h-10 w-10 text-purple/45 md:block" />
 
           <div className="eyebrow">{s.tag}</div>
@@ -368,7 +368,7 @@ function StoriesSection() {
 
         <div className="mt-9 grid grid-cols-1 gap-4 md:grid-cols-2">
           <StoryCard
-            photo="https://api.dicebear.com/9.x/notionists/svg?seed=Nastya&backgroundColor=CADBD3"
+            photo="https://api.dicebear.com/9.x/notionists/svg?seed=Nastya&backgroundColor=E5D8C2"
             name="Настя, 29, редактор"
             type="Перфекционист"
             quote="Три года не могла закончить книгу, потому что каждый абзац казался недостаточно хорошим. Помогло правило «плохой первый черновик»."
@@ -473,7 +473,7 @@ function SpecialistsSection() {
           >
             <div className="aspect-[4/3] overflow-hidden rounded-[7px] bg-mint">
               <img
-                src={sp.photo.replace(/backgroundColor=[^&]+/, "backgroundColor=CADBD3")}
+                src={sp.photo}
                 alt={sp.name}
                 loading="lazy"
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"

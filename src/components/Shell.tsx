@@ -37,6 +37,24 @@ export function Shell({
   }, [menuOpen, notifOpen]);
 
   useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [menuOpen]);
+
+  useEffect(() => {
     let ticking = false;
     let current = window.scrollY > 24;
     setScrolled(current);
@@ -112,6 +130,8 @@ export function Shell({
 
             <button
               aria-label="Меню"
+              aria-expanded={menuOpen}
+              aria-controls="site-menu"
               onClick={() => setMenuOpen(true)}
               className="transition-opacity hover:opacity-75"
             >
@@ -141,99 +161,102 @@ export function Shell({
         </div>
       </header>
 
-      {menuOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-deep/45 backdrop-blur-[2px]"
-          onClick={() => setMenuOpen(false)}
+      <div
+        className={`drawer-overlay fixed inset-0 z-50 bg-deep/45 backdrop-blur-[2px] ${menuOpen ? "is-open" : ""}`}
+        onClick={() => setMenuOpen(false)}
+        aria-hidden={!menuOpen}
+      >
+        <aside
+          id="site-menu"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Меню"
+          className="drawer-panel absolute right-0 top-0 flex h-full w-[360px] max-w-[92vw] flex-col rounded-l-2xl bg-cream p-7 text-ink shadow-[var(--shadow-4)]"
+          onClick={(e) => e.stopPropagation()}
         >
-          <aside
-            className="absolute right-0 top-0 flex h-full w-[360px] max-w-[92vw] flex-col rounded-l-2xl bg-cream p-7 text-ink shadow-[var(--shadow-4)]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between">
-              <div className="eyebrow">Меню</div>
-              <button
-                onClick={() => setMenuOpen(false)}
-                aria-label="Закрыть"
-                className="text-ink/70 transition-opacity hover:opacity-50"
-              >
-                <X size={20} strokeWidth={1.6} />
-              </button>
-            </div>
+          <div className="flex items-center justify-between">
+            <div className="eyebrow">Меню</div>
+            <button
+              onClick={() => setMenuOpen(false)}
+              aria-label="Закрыть"
+              className="text-ink/70 transition-opacity hover:opacity-50"
+            >
+              <X size={20} strokeWidth={1.6} />
+            </button>
+          </div>
 
-            <div className="mt-7 border-b border-ink/12 pb-6">
-              {user ? (
-                <div className="flex items-center gap-3.5">
-                  <Avatar user={user} size={46} />
-                  <div>
-                    <div className="text-[19px] leading-tight">Привет, {user.name}</div>
-                    <button
-                      onClick={logout}
-                      className="mt-1 text-[11px] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:text-purple"
-                    >
-                      Выйти
-                    </button>
-                  </div>
-                </div>
-              ) : (
+          <div className="mt-7 border-b border-ink/12 pb-6">
+            {user ? (
+              <div className="flex items-center gap-3.5">
+                <Avatar user={user} size={46} />
                 <div>
-                  <div className="text-[11px] uppercase tracking-[0.18em] text-ink-soft">
-                    Вы не вошли
-                  </div>
-                  <Link
-                    to="/account"
-                    onClick={() => setMenuOpen(false)}
-                    className="btn-primary mt-4 w-full justify-between"
+                  <div className="text-[19px] leading-tight">Привет, {user.name}</div>
+                  <button
+                    onClick={logout}
+                    className="mt-1 text-[11px] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:text-purple"
                   >
-                    Войти
-                    <span aria-hidden>↗</span>
-                  </Link>
+                    Выйти
+                  </button>
                 </div>
-              )}
-            </div>
-
-            <nav className="mt-7 flex flex-col gap-[18px] text-[20px] leading-none">
-              {user && (
-                <MenuLink to="/account" onClick={() => setMenuOpen(false)}>
-                  Аккаунт
-                </MenuLink>
-              )}
-              <MenuLink to="/deals" onClick={() => setMenuOpen(false)}>
-                Мои дела
-              </MenuLink>
-              <MenuLink to="/focus" onClick={() => setMenuOpen(false)}>
-                Фокус
-              </MenuLink>
-              {!quizType && (
-                <Link
-                  to="/quiz"
-                  onClick={() => setMenuOpen(false)}
-                  className="inline-block text-[12px] uppercase tracking-[0.16em] text-purple underline decoration-purple/30 underline-offset-4"
-                >
-                  Пройти опрос →
-                </Link>
-              )}
-              <MenuLink to="/plans" onClick={() => setMenuOpen(false)}>
-                Планы
-              </MenuLink>
-              <MenuLink to="/contacts" onClick={() => setMenuOpen(false)}>
-                Контакты
-              </MenuLink>
-              <div className="flex items-baseline gap-2 text-ink-soft">
-                <span>Обсуждения</span>
-                <span className="text-[10px] uppercase tracking-[0.16em] text-purple">W.I.P.</span>
               </div>
-              <MenuLink to="/about" onClick={() => setMenuOpen(false)}>
-                О нас
-              </MenuLink>
-            </nav>
+            ) : (
+              <div>
+                <div className="text-[11px] uppercase tracking-[0.18em] text-ink-soft">
+                  Вы не вошли
+                </div>
+                <Link
+                  to="/account"
+                  onClick={() => setMenuOpen(false)}
+                  className="btn-primary mt-4 w-full justify-between"
+                >
+                  Войти
+                  <span aria-hidden>↗</span>
+                </Link>
+              </div>
+            )}
+          </div>
 
-            <div className="mt-auto pt-8 text-[13px] leading-relaxed text-ink-soft">
-              Один шаг сегодня — больше, чем сто в планах.
+          <nav className="mt-7 flex flex-col gap-[18px] text-[20px] leading-none">
+            {user && (
+              <MenuLink to="/account" onClick={() => setMenuOpen(false)}>
+                Аккаунт
+              </MenuLink>
+            )}
+            <MenuLink to="/deals" onClick={() => setMenuOpen(false)}>
+              Мои дела
+            </MenuLink>
+            <MenuLink to="/focus" onClick={() => setMenuOpen(false)}>
+              Фокус
+            </MenuLink>
+            {!quizType && (
+              <Link
+                to="/quiz"
+                onClick={() => setMenuOpen(false)}
+                className="inline-block text-[12px] uppercase tracking-[0.16em] text-purple underline decoration-purple/30 underline-offset-4"
+              >
+                Пройти опрос →
+              </Link>
+            )}
+            <MenuLink to="/plans" onClick={() => setMenuOpen(false)}>
+              Планы
+            </MenuLink>
+            <MenuLink to="/contacts" onClick={() => setMenuOpen(false)}>
+              Контакты
+            </MenuLink>
+            <div className="flex items-baseline gap-2 text-ink-soft">
+              <span>Обсуждения</span>
+              <span className="text-[10px] uppercase tracking-[0.16em] text-purple">W.I.P.</span>
             </div>
-          </aside>
-        </div>
-      )}
+            <MenuLink to="/about" onClick={() => setMenuOpen(false)}>
+              О нас
+            </MenuLink>
+          </nav>
+
+          <div className="mt-auto pt-8 text-[13px] leading-relaxed text-ink-soft">
+            Один шаг сегодня — больше, чем сто в планах.
+          </div>
+        </aside>
+      </div>
 
       <main>{children}</main>
 
