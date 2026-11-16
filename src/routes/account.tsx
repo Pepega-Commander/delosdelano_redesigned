@@ -4,13 +4,13 @@ import { Camera, Trash2, Eye, EyeOff, X, User as UserIcon, Mail, Lock, LogOut } 
 import { Shell } from "@/components/Shell";
 import { AuthGate } from "@/components/AuthGate";
 import { DoodleStar } from "@/components/Doodles";
-import { store, type User } from "@/lib/storage";
+import { endAuthSession, updateAuthUser, useAuthUser } from "@/lib/auth-session";
 
 export const Route = createFileRoute("/account")({
   head: () => ({
     meta: [
       { title: "Аккаунт — DeloSdelano" },
-      { name: "description", content: "Ваш ник, почта и пароль." },
+      { name: "description", content: "Ваше имя, почта и пароль." },
     ],
   }),
   component: AccountPage,
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/account")({
 
 function AccountPage() {
   const nav = useNavigate();
-  const [user, setUser] = useState<User | null>(null);
+  const user = useAuthUser();
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState<string | undefined>(undefined);
   const [saved, setSaved] = useState(false);
@@ -26,46 +26,35 @@ function AccountPage() {
 
   const [tab, setTab] = useState<"profile" | "email" | "password">("profile");
 
-  // Email
   const [email, setEmail] = useState("");
   const [emailConfirm, setEmailConfirm] = useState("");
-  const [emailConfirmPass, setEmailConfirmPass] = useState("");
   const [emailMsg, setEmailMsg] = useState<{ tone: "ok" | "err"; text: string } | null>(null);
 
-  // Password
   const [currentPass, setCurrentPass] = useState("");
   const [newPass, setNewPass] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [passMsg, setPassMsg] = useState<{ tone: "ok" | "err"; text: string } | null>(null);
 
-  // Forgot-password modal
   const [forgotOpen, setForgotOpen] = useState(false);
 
   useEffect(() => {
-    const u = store.getUser();
-    setUser(u);
-    setName(u?.name ?? "");
-    setAvatar(u?.avatar);
-    setEmail(u?.email ?? "");
-  }, []);
+    setName(user?.name ?? "");
+    setAvatar(user?.avatar ?? undefined);
+    setEmail(user?.email ?? "");
+  }, [user]);
 
-  function save(e: React.FormEvent) {
-    e.preventDefault();
-    const n = name.trim();
-    if (!n) return;
-    const isNew = !user;
-    const next: User = { name: n, avatar };
-    store.setUser(next);
-    setUser(next);
+  function save(event: React.FormEvent) {
+    event.preventDefault();
+    const normalizedName = name.trim();
+    if (!user || !normalizedName) return;
+    updateAuthUser({ name: normalizedName, avatar });
     setSaved(true);
-    if (isNew) store.addNotification(`Добро пожаловать, ${n}!`);
     setTimeout(() => setSaved(false), 1500);
   }
 
   function logout() {
-    store.clearUser();
-    setUser(null);
+    endAuthSession();
     setName("");
     setAvatar(undefined);
     setEmail("");
@@ -75,11 +64,11 @@ function AccountPage() {
     nav({ to: "/" });
   }
 
-  async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+  async function onFile(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
     if (!file) return;
     if (file.size > 2 * 1024 * 1024) {
-      alert("Файл больше 2 МБ. Выберите поменьше.");
+      alert("Файл больше 2 МБ. Выберите файл поменьше.");
       return;
     }
     const dataUrl = await new Promise<string>((resolve, reject) => {
@@ -89,83 +78,48 @@ function AccountPage() {
       reader.readAsDataURL(file);
     });
     setAvatar(dataUrl);
-    if (user) {
-      const next: User = { ...user, avatar: dataUrl };
-      store.setUser(next);
-      setUser(next);
-    }
+    updateAuthUser({ avatar: dataUrl });
     if (fileRef.current) fileRef.current.value = "";
   }
 
   function removeAvatar() {
     setAvatar(undefined);
-    if (user) {
-      const next: User = { name: user.name };
-      store.setUser(next);
-      setUser(next);
-    }
+    updateAuthUser({ avatar: undefined });
   }
 
-  function saveEmail(e: React.FormEvent) {
-    e.preventDefault();
-    if (!user) {
-      setEmailMsg({ tone: "err", text: "Сначала сохраните ник." });
-      return;
-    }
-    const v = email.trim();
-    if (v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) {
+  function saveEmail(event: React.FormEvent) {
+    event.preventDefault();
+    if (!user) return;
+    const normalizedEmail = email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
       setEmailMsg({ tone: "err", text: "Похоже, это не почта." });
       return;
     }
-    if (v && v !== emailConfirm.trim()) {
+    if (normalizedEmail !== emailConfirm.trim()) {
       setEmailMsg({ tone: "err", text: "Почта не совпадает — проверьте повтор." });
       return;
     }
-    if (user.password) {
-      if (!emailConfirmPass) {
-        setEmailMsg({ tone: "err", text: "Введите пароль для подтверждения." });
-        return;
-      }
-      if (emailConfirmPass !== user.password) {
-        setEmailMsg({ tone: "err", text: "Пароль не совпадает." });
-        return;
-      }
-    }
-    const next: User = { ...user, email: v || undefined };
-    store.setUser(next);
-    setUser(next);
-    setEmailConfirmPass("");
+    updateAuthUser({ email: normalizedEmail });
     setEmailConfirm("");
-    setEmailMsg({ tone: "ok", text: v ? "Почта обновлена." : "Почта удалена." });
+    setEmailMsg({ tone: "ok", text: "Изменение сохранено только для текущей сессии." });
     setTimeout(() => setEmailMsg(null), 2000);
   }
 
-  function savePassword(e: React.FormEvent) {
-    e.preventDefault();
-    if (!user) {
-      setPassMsg({ tone: "err", text: "Сначала сохраните ник." });
+  function savePassword(event: React.FormEvent) {
+    event.preventDefault();
+    if (!currentPass) {
+      setPassMsg({ tone: "err", text: "Введите текущий пароль." });
       return;
     }
-    if (user.password && currentPass !== user.password) {
-      setPassMsg({ tone: "err", text: "Текущий пароль не совпадает." });
-      return;
-    }
-    if (newPass.length < 6) {
-      setPassMsg({ tone: "err", text: "Минимум 6 символов." });
+    if (newPass.length < 8) {
+      setPassMsg({ tone: "err", text: "Минимум 8 символов." });
       return;
     }
     if (newPass !== confirmPass) {
       setPassMsg({ tone: "err", text: "Пароли не совпадают." });
       return;
     }
-    const next: User = { ...user, password: newPass };
-    store.setUser(next);
-    setUser(next);
-    setCurrentPass("");
-    setNewPass("");
-    setConfirmPass("");
-    setPassMsg({ tone: "ok", text: "Пароль обновлён." });
-    setTimeout(() => setPassMsg(null), 2000);
+    setPassMsg({ tone: "err", text: "Смена пароля через API будет подключена на следующем шаге." });
   }
 
   const initial = (name || user?.name || "?").trim().charAt(0).toUpperCase();
@@ -174,14 +128,11 @@ function AccountPage() {
     return (
       <Shell>
         <div className="mx-auto max-w-2xl px-6 py-12">
-          <AuthGate title="Войдите или создайте аккаунт">
-            {() => <AfterAuth onReady={() => setUser(store.getUser())} />}
-          </AuthGate>
+          <AuthGate title="Войдите или создайте аккаунт">{() => null}</AuthGate>
         </div>
       </Shell>
     );
   }
-
   return (
     <Shell>
       <div className="mx-auto max-w-5xl px-6 py-12">
@@ -226,7 +177,7 @@ function AccountPage() {
               </span>
               <span className="text-on-dark/25">·</span>
               <span className="inline-flex items-center gap-1.5">
-                <Lock size={12} /> {user.password ? "пароль установлен" : "без пароля"}
+                <Lock size={12} /> пароль установлен
               </span>
             </div>
           </div>
@@ -333,29 +284,15 @@ function AccountPage() {
                       autoComplete="email"
                     />
                   </FieldLabel>
-                  {user?.password && (
-                    <FieldLabel label="Текущий пароль">
-                      <input
-                        type="password"
-                        value={emailConfirmPass}
-                        onChange={(e) => setEmailConfirmPass(e.target.value)}
-                        className="account-input mt-2 w-full px-4 py-3 text-[16px]"
-                        autoComplete="current-password"
-                        placeholder="Подтвердите паролем"
-                      />
-                    </FieldLabel>
-                  )}
                   <div className="flex flex-wrap items-center gap-4 pt-1">
                     <PrimaryBtn>Сохранить изменения</PrimaryBtn>
-                    {user?.password && (
-                      <button
-                        type="button"
-                        onClick={() => setForgotOpen(true)}
-                        className="text-[10px] uppercase tracking-[0.14em] text-ink-soft underline underline-offset-4 transition-colors hover:text-purple"
-                      >
-                        Забыли пароль?
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => setForgotOpen(true)}
+                      className="text-[10px] uppercase tracking-[0.14em] text-ink-soft underline underline-offset-4 transition-colors hover:text-purple"
+                    >
+                      Забыли пароль?
+                    </button>
                     {emailMsg && <Msg tone={emailMsg.tone}>{emailMsg.text}</Msg>}
                   </div>
                 </form>
@@ -365,25 +302,19 @@ function AccountPage() {
             {tab === "password" && (
               <PanelCard className="animate-fade-in space-y-6">
                 <FormHeader
-                  title={user?.password ? "Изменить пароль" : "Добавить пароль"}
-                  sub={
-                    user?.password
-                      ? "Для смены нужен текущий пароль. Забыли — восстановите по почте."
-                      : "Минимум 6 символов. Понадобится для входа в аккаунт."
-                  }
+                  title="Изменить пароль"
+                  sub="Для смены нужен текущий пароль. Подключение этой формы к API — следующий шаг."
                 />
                 <form onSubmit={savePassword} className="space-y-5">
-                  {user?.password && (
-                    <FieldLabel label="Текущий пароль">
-                      <input
-                        type={showPass ? "text" : "password"}
-                        value={currentPass}
-                        onChange={(e) => setCurrentPass(e.target.value)}
-                        className="account-input mt-2 w-full px-4 py-3 text-[16px]"
-                        autoComplete="current-password"
-                      />
-                    </FieldLabel>
-                  )}
+                  <FieldLabel label="Текущий пароль">
+                    <input
+                      type={showPass ? "text" : "password"}
+                      value={currentPass}
+                      onChange={(e) => setCurrentPass(e.target.value)}
+                      className="account-input mt-2 w-full px-4 py-3 text-[16px]"
+                      autoComplete="current-password"
+                    />
+                  </FieldLabel>
                   <FieldLabel label="Новый пароль">
                     <input
                       type={showPass ? "text" : "password"}
@@ -412,15 +343,13 @@ function AccountPage() {
                       {showPass ? <EyeOff size={12} /> : <Eye size={12} />}
                       {showPass ? "Скрыть" : "Показать"}
                     </button>
-                    {user?.password && (
-                      <button
-                        type="button"
-                        onClick={() => setForgotOpen(true)}
-                        className="text-[10px] uppercase tracking-[0.14em] text-ink-soft underline underline-offset-4 transition-colors hover:text-purple"
-                      >
-                        Забыли пароль?
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => setForgotOpen(true)}
+                      className="text-[10px] uppercase tracking-[0.14em] text-ink-soft underline underline-offset-4 transition-colors hover:text-purple"
+                    >
+                      Забыли пароль?
+                    </button>
                     {passMsg && <Msg tone={passMsg.tone}>{passMsg.text}</Msg>}
                   </div>
                 </form>
@@ -431,10 +360,7 @@ function AccountPage() {
       </div>
 
       {forgotOpen && (
-        <ForgotPasswordModal
-          defaultEmail={user?.email ?? ""}
-          onClose={() => setForgotOpen(false)}
-        />
+        <ForgotPasswordModal defaultEmail={user.email} onClose={() => setForgotOpen(false)} />
       )}
     </Shell>
   );
@@ -522,14 +448,6 @@ function Msg({ tone, children }: { tone: "ok" | "err"; children: React.ReactNode
       — {children}
     </span>
   );
-}
-
-function AfterAuth({ onReady }: { onReady: () => void }) {
-  useEffect(() => {
-    onReady();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  return null;
 }
 
 function ForgotPasswordModal({

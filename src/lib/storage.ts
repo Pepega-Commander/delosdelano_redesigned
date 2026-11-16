@@ -26,13 +26,6 @@ export interface PlanProgress {
   letter?: string;
 }
 
-export interface User {
-  name: string;
-  avatar?: string; // dataURL, stored locally
-  email?: string;
-  password?: string; // stored locally in-browser only
-}
-
 export interface Checkin {
   date: string; // YYYY-MM-DD
   done: string;
@@ -47,7 +40,6 @@ const KEYS = {
   plans: "ap.plans", // Record<planId, PlanProgress>
   archive: "ap.archive",
   checkins: "ap.checkins",
-  user: "ap.user",
   notifications: "ap.notifications",
   onboarded: "ap.onboarded",
 } as const;
@@ -150,12 +142,6 @@ export const store = {
   addCheckin: (c: Checkin) => {
     const all = read<Checkin[]>(KEYS.checkins, []).filter((x) => x.date !== c.date);
     write(KEYS.checkins, [...all, c]);
-  },
-
-  getUser: () => read<User | null>(KEYS.user, null),
-  setUser: (u: User) => write(KEYS.user, u),
-  clearUser: () => {
-    if (typeof window !== "undefined") localStorage.removeItem(KEYS.user);
   },
 
   getNotifications: () =>

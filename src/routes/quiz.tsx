@@ -4,6 +4,7 @@ import { Shell } from "@/components/Shell";
 import { DoodleStar } from "@/components/Doodles";
 import { Button } from "@/components/ui/button";
 import { questions, typeInfo, type OptionKey } from "@/lib/quiz-data";
+import { getAuthUser } from "@/lib/auth-session";
 import { store, type ProcType } from "@/lib/storage";
 
 export const Route = createFileRoute("/quiz")({
@@ -120,9 +121,7 @@ function QuizPage() {
       answers: [],
       takenAt: Date.now(),
     });
-    const name = store.getUser()?.name;
-    if (name)
-      store.addNotification(`${name}, ты прошёл опрос! Твой тип — ${typeInfo[winner].name}.`);
+    if (getAuthUser()) store.addNotification(`Опрос пройден! Твой тип — ${typeInfo[winner].name}.`);
     // Сразу открываем персональный план — без промежуточного экрана и без каталога.
     nav({ to: "/plans/$planId", params: { planId: TYPE_TO_PLAN[winner] } });
   }

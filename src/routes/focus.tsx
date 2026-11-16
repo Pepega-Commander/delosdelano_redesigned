@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Play, Pause, RotateCcw, Plus } from "lucide-react";
 import { Shell } from "@/components/Shell";
 import { DoodleStar } from "@/components/Doodles";
+import { useAuthUser } from "@/lib/auth-session";
 import { store } from "@/lib/storage";
 import {
   decomposeTask,
@@ -61,7 +62,7 @@ function FocusPage() {
   const [chat, setChat] = useState<ChatMsg[]>([]);
   const [chatInput, setChatInput] = useState("");
   const [chatLoading, setChatLoading] = useState(false);
-  const [name, setName] = useState<string | null>(null);
+  const name = useAuthUser()?.name ?? null;
   const startRef = useRef<number | null>(null);
   const chatScrollRef = useRef<HTMLDivElement>(null);
 
@@ -70,8 +71,6 @@ function FocusPage() {
   const kickstartFn = useServerFn(kickstartTask);
   const unstuckFn = useServerFn(unstuckHelp);
   const chatFn = useServerFn(chatTurn);
-
-  useEffect(() => setName(store.getUser()?.name ?? null), []);
 
   useEffect(() => {
     if (!running) return;

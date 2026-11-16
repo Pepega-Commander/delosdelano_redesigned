@@ -1,7 +1,9 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
 import { Bell, Menu, X } from "lucide-react";
-import { store, type User } from "@/lib/storage";
+import { store } from "@/lib/storage";
+import type { AuthUser } from "@/lib/auth-api";
+import { endAuthSession, useAuthUser } from "@/lib/auth-session";
 import { SoundToggle } from "@/components/SoundToggle";
 
 const NAV_ITEMS = [
@@ -22,7 +24,7 @@ export function Shell({
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const user = useAuthUser();
   const [quizType, setQuizType] = useState<string | null>(null);
   const [notifs, setNotifs] = useState<{ id: string; text: string; at: number; read: boolean }[]>(
     [],
@@ -31,7 +33,6 @@ export function Shell({
   const nav = useNavigate();
 
   useEffect(() => {
-    setUser(store.getUser());
     setQuizType(store.getQuiz()?.type ?? null);
     setNotifs(store.getNotifications());
   }, [menuOpen, notifOpen]);
@@ -79,8 +80,7 @@ export function Shell({
   const unread = notifs.filter((n) => !n.read).length;
 
   function logout() {
-    store.clearUser();
-    setUser(null);
+    endAuthSession();
     setMenuOpen(false);
     nav({ to: "/" });
   }
@@ -316,7 +316,7 @@ function MenuLink({
   );
 }
 
-function Avatar({ user, size }: { user: User | null; size: number }) {
+function Avatar({ user, size }: { user: AuthUser | null; size: number }) {
   const initial = (user?.name ?? "?").trim().charAt(0).toUpperCase() || "?";
   return (
     <span

@@ -4,6 +4,7 @@ import { Shell } from "@/components/Shell";
 import { DoodleSquiggle, DoodleStar } from "@/components/Doodles";
 import { Button } from "@/components/ui/button";
 import { typeInfo } from "@/lib/quiz-data";
+import { useAuthUser } from "@/lib/auth-session";
 import { store, type QuizResult } from "@/lib/storage";
 
 export const Route = createFileRoute("/result")({
@@ -18,11 +19,10 @@ export const Route = createFileRoute("/result")({
 
 function ResultPage() {
   const [q, setQ] = useState<QuizResult | null>(null);
-  const [name, setName] = useState<string | null>(null);
+  const name = useAuthUser()?.name ?? null;
 
   useEffect(() => {
     setQ(store.getQuiz());
-    setName(store.getUser()?.name ?? null);
   }, []);
 
   if (!q) {
