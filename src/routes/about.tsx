@@ -11,7 +11,7 @@ export const Route = createFileRoute("/about")({
       {
         name: "description",
         content:
-          "Четверо, кто делает DeloSdelano: Константин, Ильгам, Фёдор и Закария. Досье команды.",
+          "Четверо, кто делает DeloSdelano: Константин, Кристина, Матвей и Закария. Досье команды.",
       },
       { property: "og:title", content: "О нас — DeloSdelano" },
       {
@@ -52,9 +52,9 @@ const TEAM: Member[] = [
     fileNo: "№ 01",
   },
   {
-    id: "ilgam",
-    name: "Ильгам",
-    initials: "ИЛ",
+    id: "kristina",
+    name: "Кристина",
+    initials: "КР",
     role: "Дизайн",
     status: "VISUAL CODE",
     quote: "Делаю интерфейс, который обнимает визуально.",
@@ -63,12 +63,12 @@ const TEAM: Member[] = [
     fileNo: "№ 02",
   },
   {
-    id: "fedor",
-    name: "Фёдор",
-    initials: "ФД",
+    id: "matvey",
+    name: "Матвей",
+    initials: "МТ",
     role: "Фронтенд",
     status: "UI REALIZATION",
-    quote: "Оживляю пиксели Ильгама и заставляю кнопки летать.",
+    quote: "Оживляю пиксели Кристины и заставляю кнопки летать.",
     bio: "Превращает макеты в интерфейс, который отвечает на клик. Верит, что микро-анимация — это забота, а не украшение.",
     tone: "sage",
     fileNo: "№ 03",
@@ -245,7 +245,9 @@ function Polaroid({ m, onOpen }: { m: Member; onOpen: () => void }) {
         </div>
         {/* Caption */}
         <div className="px-1 pb-1 pt-4">
-          <span className="block text-[24px] leading-none font-light text-ink">{m.name}</span>
+          <span className="block text-[clamp(14px,4.5vw,24px)] leading-none font-light text-ink">
+            {m.name}
+          </span>
           <span className={`mt-1.5 block text-[10px] uppercase tracking-[0.16em] ${t.text}`}>
             {m.role}
           </span>
@@ -316,7 +318,7 @@ function ClassifiedStamp({ memberId }: { memberId: string }) {
   return (
     <div
       aria-hidden
-      className="pointer-events-none absolute right-6 top-16 select-none"
+      className="pointer-events-none absolute right-6 top-16 hidden select-none md:block"
       style={{
         transform: `rotate(${rot}deg) scale(${scale})`,
         opacity,
@@ -346,7 +348,8 @@ function DossierContent({ m, onClose }: { m: Member; onClose: () => void }) {
       {/* Top strip */}
       <div className="dossier-strip flex items-center justify-between border-b border-ink/10 bg-purple px-6 py-3.5 text-on-dark">
         <div className="text-[9px] uppercase tracking-[0.18em]">
-          Досье {m.fileNo} · для служебного пользования
+          Досье {m.fileNo}
+          <span className="hidden sm:inline"> · для служебного пользования</span>
         </div>
         <button
           data-sfx="off"
@@ -354,7 +357,7 @@ function DossierContent({ m, onClose }: { m: Member; onClose: () => void }) {
             play("close");
             onClose();
           }}
-          className="text-[9px] uppercase tracking-[0.16em] transition-colors hover:text-mint"
+          className="shrink-0 whitespace-nowrap text-[9px] uppercase tracking-[0.16em] transition-colors hover:text-mint"
           aria-label="Закрыть досье"
         >
           ✕ закрыть
