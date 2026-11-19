@@ -94,10 +94,12 @@ function Index() {
           <DoodleFlourish className="-ml-1 mb-4 h-24 w-28 text-ink/45 md:-ml-3 md:h-28 md:w-32" />
           <DoodleStar className="absolute top-1 right-2 hidden h-10 w-10 text-purple/45 md:block" />
 
-          <div className="eyebrow">{s.tag}</div>
+          <div key={`tag-${slide}`} className="eyebrow hero-copy-enter">
+            {s.tag}
+          </div>
 
           <div className="mt-8 grid items-center gap-10 md:mt-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
-            <div className="relative">
+            <div key={slide} className="hero-copy-enter relative">
               <h1 className="max-w-[650px] text-[40px] leading-[1.07] font-light tracking-[-0.015em] text-ink sm:text-[48px] md:text-[56px] lg:text-[62px]">
                 {s.title}
                 <span className="mt-5 block w-fit rounded-[10px] bg-purple px-5 py-3 text-[0.82em] leading-[1.08] text-on-dark shadow-[5px_5px_0_var(--deep)] sm:px-6 sm:py-3.5">
@@ -122,7 +124,7 @@ function Index() {
                 </Link>
               </div>
 
-              <DoodleUnderline className="mt-5 h-9 w-36 text-ink/45" />
+              <DoodleUnderline className="mt-5 h-9 w-36 text-ink/45 lg:absolute lg:-bottom-14 lg:left-0 lg:mt-0" />
             </div>
 
             <div className="relative mx-auto w-full max-w-[520px] lg:ml-auto">
@@ -183,7 +185,7 @@ function Index() {
       {/* FACTS */}
       <section
         id="facts"
-        className="relative mx-auto max-w-[1360px] px-5 pb-16 pt-12 md:px-8 md:pb-20 md:pt-14"
+        className="relative mx-auto max-w-[1360px] scroll-mt-32 px-5 pb-16 pt-12 md:px-8 md:pb-20 md:pt-14"
       >
         <DoodleLoop className="absolute right-6 top-8 hidden h-12 w-24 text-ink/35 lg:block" />
         <div className="eyebrow">— что мы знаем —</div>
@@ -257,18 +259,18 @@ function Index() {
                   key={type}
                   to="/quiz"
                   className={`group flex items-center justify-between rounded-[8px] px-5 py-4 text-[16px] transition-colors ${
-                    active ? "bg-purple text-on-dark" : "bg-cream text-ink hover:bg-cream/70"
+                    active
+                      ? "bg-purple text-on-dark"
+                      : "bg-cream text-ink hover:bg-purple hover:text-on-dark"
                   }`}
                 >
                   <span>{typeInfo[type].name}</span>
                   <ArrowRight
                     size={17}
                     strokeWidth={1.5}
-                    className={
-                      active
-                        ? "text-on-dark/80"
-                        : "text-ink/55 transition-transform duration-300 group-hover:translate-x-1"
-                    }
+                    className={`transition duration-300 group-hover:translate-x-1 ${
+                      active ? "text-on-dark/80" : "text-ink/55 group-hover:text-on-dark"
+                    }`}
                   />
                 </Link>
               );
