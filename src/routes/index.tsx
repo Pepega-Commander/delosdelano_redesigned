@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowRight, ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { Shell } from "@/components/Shell";
 import {
@@ -74,31 +74,46 @@ const QUIZ_ORDER: ProcType[] = ["perfectionist", "avoider", "rebel", "anxious"];
 function Index() {
   const [slide, setSlide] = useState(0);
   const [quizType, setQuizType] = useState<ProcType | null>(null);
+  const slideTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     setQuizType(store.getQuiz()?.type ?? null);
   }, []);
 
-  useEffect(() => {
-    const id = setInterval(() => setSlide((s) => (s + 1) % slides.length), 6000);
-    return () => clearInterval(id);
+  const startSlideTimer = useCallback(() => {
+    if (slideTimer.current) clearInterval(slideTimer.current);
+    slideTimer.current = setInterval(() => setSlide((s) => (s + 1) % slides.length), 6000);
   }, []);
+
+  useEffect(() => {
+    startSlideTimer();
+    return () => {
+      if (slideTimer.current) clearInterval(slideTimer.current);
+    };
+  }, [startSlideTimer]);
+
+  /** Manual navigation restarts the 6s countdown instead of advancing right away. */
+  function goToSlide(next: number) {
+    setSlide((next + slides.length) % slides.length);
+    startSlideTimer();
+  }
 
   const s = slides[slide];
 
   return (
     <Shell showFooter>
       {/* HERO */}
-      <section className="mx-auto max-w-[1360px] px-5 pb-10 pt-8 md:px-8 md:pb-12 md:pt-12">
-        <div className="relative">
-          <DoodleFlourish className="-ml-1 mb-4 h-24 w-28 text-ink/45 md:-ml-3 md:h-28 md:w-32" />
+      <section className="mx-auto max-w-[1360px] px-5 pb-10 pt-8 md:px-8 md:pb-12 md:pt-12 lg:flex lg:min-h-[calc(100svh-58px)] lg:flex-col">
+        <div className="relative lg:grid lg:flex-1 lg:grid-rows-[1fr_auto_1fr]">
+          <div className="lg:self-start">
+            <DoodleFlourish className="-ml-1 mb-4 h-24 w-28 text-ink/45 md:-ml-3 md:h-28 md:w-32" />
+            <div key={`tag-${slide}`} className="eyebrow hero-copy-enter">
+              {s.tag}
+            </div>
+          </div>
           <DoodleStar className="absolute top-1 right-2 hidden h-10 w-10 text-purple/45 md:block" />
 
-          <div key={`tag-${slide}`} className="eyebrow hero-copy-enter">
-            {s.tag}
-          </div>
-
-          <div className="mt-8 grid items-center gap-10 md:mt-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+          <div className="mt-8 grid items-center gap-10 md:mt-10 lg:mt-0 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
             <div key={slide} className="hero-copy-enter relative">
               <h1 className="max-w-[650px] text-[40px] leading-[1.07] font-light tracking-[-0.015em] text-ink sm:text-[48px] md:text-[56px] lg:text-[62px]">
                 {s.title}
@@ -124,7 +139,7 @@ function Index() {
                 </Link>
               </div>
 
-              <DoodleUnderline className="mt-5 h-9 w-36 text-ink/45 lg:absolute lg:-bottom-14 lg:left-0 lg:mt-0" />
+              <DoodleUnderline className="mt-5 h-9 w-36 text-ink/45" />
             </div>
 
             <div className="relative mx-auto w-full max-w-[520px] lg:ml-auto">
@@ -152,14 +167,14 @@ function Index() {
                   <div className="flex items-center gap-2">
                     <button
                       aria-label="Предыдущий"
-                      onClick={() => setSlide((slide - 1 + slides.length) % slides.length)}
+                      onClick={() => goToSlide(slide - 1)}
                       className="flex h-9 w-9 items-center justify-center rounded-full bg-lav/70 text-ink transition hover:bg-lav"
                     >
                       <ChevronLeft size={16} strokeWidth={1.8} />
                     </button>
                     <button
                       aria-label="Следующий"
-                      onClick={() => setSlide((slide + 1) % slides.length)}
+                      onClick={() => goToSlide(slide + 1)}
                       className="flex h-9 w-9 items-center justify-center rounded-full bg-lav/70 text-ink transition hover:bg-lav"
                     >
                       <ChevronRight size={16} strokeWidth={1.8} />
@@ -170,7 +185,7 @@ function Index() {
             </div>
           </div>
 
-          <div className="hairline mt-12 flex items-center justify-between gap-6 pt-4">
+          <div className="hairline mt-12 flex items-center justify-between gap-6 pt-4 lg:mt-0 lg:self-end">
             <DoodleSquiggle className="h-5 w-24 text-purple/40 md:w-32" />
             <a
               href="#facts"
@@ -185,7 +200,7 @@ function Index() {
       {/* FACTS */}
       <section
         id="facts"
-        className="relative mx-auto max-w-[1360px] scroll-mt-32 px-5 pb-16 pt-12 md:px-8 md:pb-20 md:pt-14"
+        className="relative mx-auto max-w-[1360px] scroll-mt-8 px-5 pb-16 pt-12 md:px-8 md:pb-20 md:pt-14"
       >
         <DoodleLoop className="absolute right-6 top-8 hidden h-12 w-24 text-ink/35 lg:block" />
         <div className="eyebrow">— что мы знаем —</div>
