@@ -103,16 +103,17 @@ function Index() {
   return (
     <Shell showFooter>
       {/* HERO */}
-      <section className="mx-auto max-w-[1360px] px-5 pb-10 pt-8 md:px-8 md:pb-12 md:pt-12">
-        <div className="relative">
-          <DoodleFlourish className="-ml-1 mb-4 h-24 w-28 text-ink/45 md:-ml-3 md:h-28 md:w-32" />
+      <section className="mx-auto max-w-[1360px] px-5 pb-10 pt-8 md:px-8 md:pb-12 md:pt-12 lg:flex lg:min-h-[calc(100svh-58px)] lg:flex-col">
+        <div className="relative lg:grid lg:flex-1 lg:grid-rows-[1fr_auto_1fr]">
+          <div className="lg:self-start">
+            <DoodleFlourish className="-ml-1 mb-4 h-24 w-28 text-ink/45 md:-ml-3 md:h-28 md:w-32" />
+            <div key={`tag-${slide}`} className="eyebrow hero-copy-enter">
+              {s.tag}
+            </div>
+          </div>
           <DoodleStar className="absolute top-1 right-2 hidden h-10 w-10 text-purple/45 md:block" />
 
-          <div key={`tag-${slide}`} className="eyebrow hero-copy-enter">
-            {s.tag}
-          </div>
-
-          <div className="mt-8 grid items-center gap-10 md:mt-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+          <div className="mt-8 grid items-center gap-10 md:mt-10 lg:mt-0 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
             <div key={slide} className="hero-copy-enter relative">
               <h1 className="max-w-[650px] text-[40px] leading-[1.07] font-light tracking-[-0.015em] text-ink sm:text-[48px] md:text-[56px] lg:text-[62px]">
                 {s.title}
@@ -184,7 +185,7 @@ function Index() {
             </div>
           </div>
 
-          <div className="mt-12">
+          <div className="mt-12 lg:mt-0 lg:self-end">
             <div className="flex items-center justify-between gap-6 pb-4">
               <DoodleSquiggle className="h-5 w-24 text-purple/40 md:w-32" />
               <a
